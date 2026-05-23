@@ -77,6 +77,17 @@
     </ul>
   </footer>
 
+  <div id="copyright" align="center">
+    &copy;  2026 www.stageandstem.com - All Rights Reserved.
+    <span>Last Updated : 05/23/2026 22:39:35</span>
+</div>
+<script>
+(() => {
+    const copyrightElement = document.getElementById("copyright");
+    copyrightElement.innerHTML = "&copy;  "+new Date().getFullYear()+" www.stageandstem.com - All Rights Reserved.";
+    copyrightElement.innerHTML += "<br/>Last Updated : "+document.lastModified;
+})();
+</script>
   <script src="newsletter.js"></script>
 </body>
 </html>
