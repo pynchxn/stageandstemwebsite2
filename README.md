@@ -1,10 +1,10 @@
-# Stage & Stem — Project Brief for Claude Code
+# Stage & Stem — Project Brief
 
 ## Overview
 
 Stage & Stem is a performance space and bistro operating as one business under a single brand, split into two distinct sides. The website reflects this dual identity — two separate mini-sites that share the same brand language, with cross-linking between them.
 
-The live domain is **stageandstem.co.uk**, hosted on **Fasthosts** via their File Manager (public_html directory).
+The live domain is **stageandstem.com**, hosted on **Fasthosts** via their File Manager (public_html directory).
 
 ---
 
@@ -12,7 +12,7 @@ The live domain is **stageandstem.co.uk**, hosted on **Fasthosts** via their Fil
 
 **Business name:** Stage & Stem  
 **Tagline:** Performance Space & Bistro  
-**Email:** info@stageandstem.co.uk  
+**Email:** info@stageandstem.com  
 **Instagram:** @stageandstem
 
 ### Logo files
@@ -40,29 +40,29 @@ The live domain is **stageandstem.co.uk**, hosted on **Fasthosts** via their Fil
 
 ```
 /
-├── landing.html          ← Entry/split page (root of site)
+├── index.html          ← Entry/split page (root of site)
 ├── logo.jpeg             ← Full logo
 ├── logo_left.png         ← Left half (theatre/stage side)
 ├── logo_right.png        ← Right half (bistro/wine side)
 │
 ├── stage/
 │   ├── style.css         ← Stage styles (cool, indigo-tinted)
-│   ├── index.html        ← Stage home
+│   ├── stage.html        ← Stage home
 │   ├── whats-on.html     ← Events/programme
 │   ├── perform-with-us.html ← Performer & hire enquiries
-│   └── contact.html      ← Stage contact
+│   └── contact_stage.html      ← Stage contact
 │
 └── bistro/
     ├── style.css         ← Bistro styles (warm, amber-tinted)
-    ├── index.html        ← Bistro home
+    ├── bistro.html        ← Bistro home
     ├── menu.html         ← Food & drink menu
     ├── book-a-table.html ← Table reservations
-    └── contact.html      ← Bistro contact
+    └── contact_bistro.html      ← Bistro contact
 ```
 
 ---
 
-## The Landing Page (landing.html)
+## The Landing Page (index.html)
 
 The entry point to the site. A full-screen split layout — left side links to the Stage, right side links to the Bistro.
 
@@ -76,8 +76,8 @@ The entry point to the site. A full-screen split layout — left side links to t
 - Logo reveal animation on page load (fade in + scale up)
 
 **Links:**
-- Left panel → `stage/index.html`
-- Right panel → `bistro/index.html`
+- Left panel → `stage.html`
+- Right panel → `bistro.html`
 
 **The half-fade is achieved via JavaScript:** mouseenter/mouseleave events on each panel add/remove `hover-stage` or `hover-bistro` classes on `<body>`, which CSS uses to target `.logo-left` and `.logo-right` opacity.
 
@@ -99,21 +99,21 @@ Cool, theatrical, dark. Background has a subtle deep indigo/purple tint (`#08080
 ### Pages
 | File | Purpose |
 |---|---|
-| `index.html` | Stage home — hero + upcoming events cards |
+| `stage.html` | Stage home — hero + upcoming events cards |
 | `whats-on.html` | Programme/events listing |
 | `perform-with-us.html` | Info for performers + hire enquiries |
-| `contact.html` | Contact for performance/hire |
+| `contact_stage.html` | Contact for performance/hire |
 
 ### Navigation (all stage pages)
 Home · What's On · Perform With Us · Contact
 
 ### Cross-link to Bistro
-Every stage page has a **corner tab** fixed to the top-right. It reads "Bistro" with a bar chart icon and links to `../bistro/index.html`. Style: small gold uppercase text, gold border, dark blurred background. Fades slightly on hover.
+Every stage page has a **corner tab** fixed to the top-right. It reads "Bistro" with a bar chart icon and links to `../bistro.html`. Style: small gold uppercase text, gold border, dark blurred background. Fades slightly on hover.
 
 ### Cross-links within content
-- Cabaret Evenings card on `whats-on.html` links to `../bistro/book-a-table.html`
-- `contact.html` footer note links to `../bistro/book-a-table.html`
-- Footer on all pages links to `../bistro/index.html`
+- Cabaret Evenings card on `whats-on.html` links to `book-a-table.html`
+- `contact.html` footer note links to `book-a-table.html`
+- Footer on all pages links to `bistro.html`
 
 ---
 
@@ -133,22 +133,22 @@ Warm, candlelit, intimate. Background has a subtle amber/burgundy tint (`#0d0905
 ### Pages
 | File | Purpose |
 |---|---|
-| `index.html` | Bistro home — hero + dining info cards |
+| `bistro.html` | Bistro home — hero + dining info cards |
 | `menu.html` | Food menu (starters, mains, desserts with prices) |
 | `book-a-table.html` | Reservation page (email-based for now) |
-| `contact.html` | Contact for dining/private hire |
+| `contact_bistro.html` | Contact for dining/private hire |
 
 ### Navigation (all bistro pages)
 Home · Menu · Book a Table · Contact
 
 ### Cross-link to Stage
-Every bistro page has a **corner tab** fixed to the top-right. It reads "Stage" with a bar chart icon and links to `../stage/index.html`.
+Every bistro page has a **corner tab** fixed to the top-right. It reads "Stage" with a bar chart icon and links to `stage.html`.
 
 ### Cross-links within content
-- Dine & Show card on `index.html` links to `../stage/whats-on.html`
-- `book-a-table.html` footer note links to `../stage/whats-on.html`
-- `contact.html` footer note links to `../stage/contact.html`
-- Footer on all pages links to `../stage/index.html`
+- Dine & Show card on `stage.html` links to `whats-on.html`
+- `book-a-table.html` footer note links to `whats-on.html`
+- `contact_stage.html` footer note links to `contact_stage.html`
+- Footer on all pages links to `stage.html`
 
 ---
 
@@ -158,7 +158,7 @@ These patterns appear consistently across both sites. When adding new pages, fol
 
 ### Corner Tab
 ```html
-<a class="corner-tab" href="../[other-site]/index.html">
+<a class="corner-tab" href="[other-site].html">
   <svg ...>...</svg>
   [Stage or Bistro]
 </a>
@@ -169,7 +169,7 @@ Fixed top-right, z-index 100, gold text, gold border, blurred dark background.
 ```html
 <nav>
   <a class="nav-logo" href="index.html">
-    <img src="../logo_left.png" alt="Stage & Stem" />  <!-- or logo_right.png for bistro -->
+    <img src="logo.png" alt="Stage & Stem" /> 
   </a>
   <ul class="nav-links">
     <li><a href="..." class="active">Active Page</a></li>
@@ -213,7 +213,7 @@ Add `class="active"` to the current page link.
   <ul class="footer-links">
     <li><a href="...">Link</a></li>
     <!-- Always include a cross-link to the other site as the last item -->
-    <li><a href="../bistro/index.html">Bistro →</a></li>
+    <li><a href="bistro.html">Bistro →</a></li>
   </ul>
 </footer>
 ```
@@ -231,9 +231,9 @@ Because the sites live in subdirectories, paths must go up one level with `../` 
 
 | From | To logo | To other site |
 |---|---|---|
-| `landing.html` | `logo_left.png` | `stage/index.html` |
-| `stage/*.html` | `../logo_left.png` | `../bistro/index.html` |
-| `bistro/*.html` | `../logo_right.png` | `../stage/index.html` |
+| `landing.html` | `logo_left.png` | `stage.html` |
+| `stage/*.html` | `../logo_left.png` | `bistro.html` |
+| `bistro/*.html` | `../logo_right.png` | `stage.html` |
 
 Each site's `style.css` lives inside its own folder and is referenced as `style.css` (no `../` needed).
 
@@ -266,7 +266,7 @@ Each site's `style.css` lives inside its own folder and is referenced as `style.
 
 **Host:** Fasthosts  
 **Method:** File Manager → upload to `public_html`  
-**Domain:** stageandstem.co.uk
+**Domain:** stageandstem.com
 
 Upload the entire folder structure as-is. All relative paths are set up correctly — as long as the folder structure is maintained, everything will resolve.
 
