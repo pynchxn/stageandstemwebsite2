@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stage & Stem</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Montserrat:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #080808;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      display: flex;
+    }
+
+    /* ── PANELS ── */
+    .panel {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.6s ease;
+    }
+
+    .panel--stage  { background: #080808; }
+    .panel--bistro { background: #080808; }
+
+    .panel--stage:hover  { background: #0c0c14; }
+    .panel--bistro:hover { background: #0e0b07; }
+
+    /* Label */
+    .panel__label {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      letter-spacing: 0.08em;
+      color: #c9a96e;
+      opacity: 0;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      transform: translateY(6px);
+      position: absolute;
+    }
+
+    .panel--stage  .panel__label { left: 10%; }
+    .panel--bistro .panel__label { right: 10%; text-align: right; }
+
+    .panel--stage:hover  .panel__label,
+    .panel--bistro:hover .panel__label {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Divider line */
+    .divider {
+      position: absolute;
+      left: 50%;
+      top: 10%;
+      height: 80%;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba(201,169,110,0.3) 30%, rgba(201,169,110,0.3) 70%, transparent);
+      transform: translateX(-50%);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* ── CENTRE LOGO ── */
+    .logo-wrap {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      pointer-events: none;
+      animation: fadeIn 1.2s ease forwards;
+      display: flex;
+      width: 260px;
+      max-width: 32vw;
+    }
+
+    .logo-wrap img {
+      width: 50%;
+      display: block;
+      transition: opacity 0.5s ease;
+    }
+
+    /* When stage (left) hovered — fade RIGHT half */
+    body.hover-stage  .logo-right { opacity: 0.12; }
+
+    /* When bistro (right) hovered — fade LEFT half */
+    body.hover-bistro .logo-left  { opacity: 0.12; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.92); }
+      to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="panel panel--stage" href="stage/index.html">
+    <span class="panel__label">Performance Space</span>
+  </a>
+
+  <div class="divider"></div>
+
+  <div class="logo-wrap">
+    <img class="logo-left"  src="logo_left.png"  alt="Stage & Stem" />
+    <img class="logo-right" src="logo_right.png" alt="" />
+  </div>
+
+  <a class="panel panel--bistro" href="bistro/index.html">
+    <span class="panel__label">Bistro</span>
+  </a>
+
+  <script>
+    const stage  = document.querySelector('.panel--stage');
+    const bistro = document.querySelector('.panel--bistro');
+
+    stage.addEventListener('mouseenter', () => document.body.classList.add('hover-stage'));
+    stage.addEventListener('mouseleave', () => document.body.classList.remove('hover-stage'));
+
+    bistro.addEventListener('mouseenter', () => document.body.classList.add('hover-bistro'));
+    bistro.addEventListener('mouseleave', () => document.body.classList.remove('hover-bistro'));
+  </script>
+
+</body>
+</html>
