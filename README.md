@@ -54,10 +54,9 @@ All files are in the repository root:
 ├── contact_stage.html      ← Stage contact
 │
 ├── bistro.html             ← Bistro home
-├── menu.html               ← Bistro: food & drink menu
+├── menus.html              ← Bistro: food & drink menu (links to PDF menus)
 ├── book-a-table.html       ← Bistro: table reservations
 ├── contact_bistro.html     ← Bistro contact
-├── menus.html              ← Duplicate of menu.html (unused — see Known Issues)
 │
 ├── style-stage.css         ← Stage styles (cool, indigo-tinted)
 ├── style-bistro.css        ← Bistro styles (warm, amber-tinted)
@@ -161,7 +160,7 @@ Adds menu and newsletter components: `.menu-section`, `.menu-item`, `.menu-item-
 | File | Purpose |
 |---|---|
 | `bistro.html` | Bistro home — hero + dining info cards |
-| `menu.html` | Food & drink menu (starters, mains, desserts with prices) |
+| `menus.html` | Food & drink menu — links to PDF menus (food, drinks, cocktails) |
 | `book-a-table.html` | Reservation page (email-based for now) |
 | `contact_bistro.html` | Contact for dining/private hire |
 
@@ -172,7 +171,7 @@ Home · Menu · Book a Table · Contact — with the full `logo.png` as the nav 
 Every bistro page has a **corner tab** fixed to the top-right reading "Stage", linking to `stage.html`.
 
 ### Cross-links within content
-- `bistro.html` dine & show card → `whats-on.html`; CTA → `menu.html`
+- `bistro.html` dine & show card → `whats-on.html`; CTA → `menus.html`
 - `book-a-table.html` inline note → `whats-on.html`
 - `contact_bistro.html` inline note → `contact_stage.html`
 - Footer on every bistro page links to `stage.html`
@@ -304,9 +303,6 @@ directly. Keep all files in the same directory and everything resolves.
 
 These don't break the live site but are worth tidying in a future pass:
 
-- **`menus.html` is a redundant duplicate.** It is byte-identical to
-  `menu.html`, and no page links to it (all nav/menu links point to
-  `menu.html`). Safe to delete.
 - **`.DS_Store` is tracked in git.** This is a macOS Finder metadata file
   with no purpose in the repo. It should be removed and added to a
   `.gitignore`.
