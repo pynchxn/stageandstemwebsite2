@@ -2,9 +2,11 @@
 
 ## Overview
 
-Stage & Stem is a performance space and bistro operating as one business under a single brand, split into two distinct sides. The website reflects this dual identity — two separate mini-sites that share the same brand language, with cross-linking between them.
+Stage & Stem is a performance space and bistro operating as one business under a single brand, split into two distinct sides. The website reflects this dual identity — two sets of pages that share the same brand language, with cross-linking between them.
 
-The live domain is **stageandstem.com**, hosted on **Fasthosts** via their File Manager (public_html directory).
+It is a **flat static site**: plain HTML, CSS and a little JavaScript, with no build step and no backend. The live domain is **stageandstem.com**, hosted on **Fasthosts** via their File Manager (`public_html` directory).
+
+> **Note on structure:** all files live in the **root** of the repository — there are no `stage/` or `bistro/` subfolders. Pages are distinguished by filename and by which stylesheet they load.
 
 ---
 
@@ -16,13 +18,15 @@ The live domain is **stageandstem.com**, hosted on **Fasthosts** via their File 
 **Instagram:** @stageandstem
 
 ### Logo files
-- `logo.jpeg` — full logo (white on black, square JPEG)
-- `logo_left.png` — left half of logo (theatre mask side)
-- `logo_right.png` — right half of logo (wine glass side)
+- `logo.png` — full logo, used in the nav bar on every content page
+- `logo_left.png` — left half of logo (theatre mask side), used only on the landing page
+- `logo_right.png` — right half of logo (wine glass side), used only on the landing page
 
 ### Typography
 - **Serif:** Cormorant Garamond (Google Fonts) — headings, italic display text
 - **Sans:** Montserrat (Google Fonts) — body, navigation, labels
+
+Fonts are loaded from Google Fonts via a `<link>` in each page's `<head>`.
 
 ### Colour palette
 | Token | Value | Usage |
@@ -38,33 +42,43 @@ The live domain is **stageandstem.com**, hosted on **Fasthosts** via their File 
 
 ## File Structure
 
+All files are in the repository root:
+
 ```
 /
-├── index.html          ← Entry/split page (root of site)
-├── logo.jpeg             ← Full logo
-├── logo_left.png         ← Left half (theatre/stage side)
-├── logo_right.png        ← Right half (bistro/wine side)
+├── index.html              ← Split landing / entry page (self-contained)
 │
-├── stage/
-│   ├── style.css         ← Stage styles (cool, indigo-tinted)
-│   ├── stage.html        ← Stage home
-│   ├── whats-on.html     ← Events/programme
-│   ├── perform-with-us.html ← Performer & hire enquiries
-│   └── contact_stage.html      ← Stage contact
+├── stage.html              ← Stage home
+├── whats-on.html           ← Stage: events/programme
+├── perform-with-us.html    ← Stage: performer & hire enquiries
+├── contact_stage.html      ← Stage contact
 │
-└── bistro/
-    ├── style.css         ← Bistro styles (warm, amber-tinted)
-    ├── bistro.html        ← Bistro home
-    ├── menu.html         ← Food & drink menu
-    ├── book-a-table.html ← Table reservations
-    └── contact_bistro.html      ← Bistro contact
+├── bistro.html             ← Bistro home
+├── menu.html               ← Bistro: food & drink menu
+├── book-a-table.html       ← Bistro: table reservations
+├── contact_bistro.html     ← Bistro contact
+├── menus.html              ← Duplicate of menu.html (unused — see Known Issues)
+│
+├── style-stage.css         ← Stage styles (cool, indigo-tinted)
+├── style-bistro.css        ← Bistro styles (warm, amber-tinted)
+├── style 3.css             ← Orphan stylesheet (unused — see Known Issues)
+│
+├── newsletter.js           ← MailChimp newsletter signup handler
+│
+├── logo.png                ← Full logo (nav)
+├── logo_left.png           ← Left half (landing page)
+└── logo_right.png          ← Right half (landing page)
 ```
+
+Stage pages load `style-stage.css`; bistro pages load `style-bistro.css`. The landing page has its own inline styles and loads neither.
 
 ---
 
-## The Landing Page (index.html)
+## The Landing Page (`index.html`)
 
-The entry point to the site. A full-screen split layout — left side links to the Stage, right side links to the Bistro.
+The entry point to the site, and entirely self-contained — all of its CSS and JavaScript are inline; it does not use `style-stage.css`, `style-bistro.css`, or `newsletter.js`.
+
+A full-screen split layout — the left panel links to the Stage, the right panel links to the Bistro.
 
 **Key features:**
 - Two equal panels side by side, each a clickable `<a>` element
@@ -72,29 +86,35 @@ The entry point to the site. A full-screen split layout — left side links to t
 - On hover over either panel, the opposite half of the logo fades to ~12% opacity, highlighting the relevant side
 - A subtle gold vertical divider line runs behind the logo
 - On hover, a gold italic label fades in — "Performance Space" on the left, "Bistro" on the right
-- Hover also tints the panel background (indigo tint for stage, amber tint for bistro)
+- Hover also tints the panel background (cooler tint for stage, warmer for bistro)
 - Logo reveal animation on page load (fade in + scale up)
 
 **Links:**
 - Left panel → `stage.html`
 - Right panel → `bistro.html`
 
-**The half-fade is achieved via JavaScript:** mouseenter/mouseleave events on each panel add/remove `hover-stage` or `hover-bistro` classes on `<body>`, which CSS uses to target `.logo-left` and `.logo-right` opacity.
+**The half-fade** is achieved via inline JavaScript: `mouseenter`/`mouseleave` events on each panel add/remove `hover-stage` or `hover-bistro` classes on `<body>`, which the inline CSS uses to target `.logo-left` / `.logo-right` opacity.
 
 ---
 
-## The Stage Site (stage/)
+## The Stage Pages
 
 ### Feel & aesthetic
-Cool, theatrical, dark. Background has a subtle deep indigo/purple tint (`#08080f`). Hover states use a soft purple glow. The Stage pages use `logo_left.png` (the mask half) in the nav.
+Cool, theatrical, dark. Background has a subtle deep indigo/purple tint. Hover states use a soft purple glow.
 
-### Style variables (stage/style.css)
+### Styles (`style-stage.css`)
 ```css
 --bg: #08080f
 --bg-2: #0d0d1a
 --accent: #c9a96e
+--accent-dim: rgba(201,169,110,0.25)
+--white: #f5f2ed
+--muted: rgba(245,242,237,0.5)
 --tint: rgba(80,50,140,0.12)   /* purple glow */
+--font-serif: 'Cormorant Garamond', serif
+--font-sans: 'Montserrat', sans-serif
 ```
+Includes a `.card-date` class for event dates.
 
 ### Pages
 | File | Purpose |
@@ -105,60 +125,84 @@ Cool, theatrical, dark. Background has a subtle deep indigo/purple tint (`#08080
 | `contact_stage.html` | Contact for performance/hire |
 
 ### Navigation (all stage pages)
-Home · What's On · Perform With Us · Contact
+Home · What's On · Perform With Us · Contact — with the full `logo.png` as the nav logo.
 
 ### Cross-link to Bistro
-Every stage page has a **corner tab** fixed to the top-right. It reads "Bistro" with a bar chart icon and links to `../bistro.html`. Style: small gold uppercase text, gold border, dark blurred background. Fades slightly on hover.
+Every stage page has a **corner tab** fixed to the top-right reading "Bistro", linking to `bistro.html`. Style: small gold uppercase text, gold border, dark blurred background.
 
 ### Cross-links within content
-- Cabaret Evenings card on `whats-on.html` links to `book-a-table.html`
-- `contact.html` footer note links to `book-a-table.html`
-- Footer on all pages links to `bistro.html`
+- `stage.html` cabaret card → `book-a-table.html`; CTAs → `whats-on.html`
+- `whats-on.html` cabaret card → `book-a-table.html`
+- `perform-with-us.html` CTA → `contact_stage.html`
+- `contact_stage.html` inline note → `book-a-table.html`
+- Footer on every stage page links to `bistro.html`
 
 ---
 
-## The Bistro Site (bistro/)
+## The Bistro Pages
 
 ### Feel & aesthetic
-Warm, candlelit, intimate. Background has a subtle amber/burgundy tint (`#0d0905`). Hover states use a soft warm amber glow. The Bistro pages use `logo_right.png` (the wine glass half) in the nav.
+Warm, candlelit, intimate. Background has a subtle amber/burgundy tint. Hover states use a soft warm amber glow.
 
-### Style variables (bistro/style.css)
+### Styles (`style-bistro.css`)
 ```css
 --bg: #0d0905
 --bg-2: #130c06
 --accent: #c9a96e
+--accent-dim: rgba(201,169,110,0.25)
+--white: #f5f2ed
+--muted: rgba(245,242,237,0.5)
 --tint: rgba(140,60,20,0.1)    /* amber glow */
+--font-serif: 'Cormorant Garamond', serif
+--font-sans: 'Montserrat', sans-serif
 ```
+Adds menu and newsletter components: `.menu-section`, `.menu-item`, `.menu-item-name`, `.menu-item-price`, `.newsletter-strip`, `.newsletter-form`, `.newsletter-error` (`#c97070`).
 
 ### Pages
 | File | Purpose |
 |---|---|
 | `bistro.html` | Bistro home — hero + dining info cards |
-| `menu.html` | Food menu (starters, mains, desserts with prices) |
+| `menu.html` | Food & drink menu (starters, mains, desserts with prices) |
 | `book-a-table.html` | Reservation page (email-based for now) |
 | `contact_bistro.html` | Contact for dining/private hire |
 
 ### Navigation (all bistro pages)
-Home · Menu · Book a Table · Contact
+Home · Menu · Book a Table · Contact — with the full `logo.png` as the nav logo.
 
 ### Cross-link to Stage
-Every bistro page has a **corner tab** fixed to the top-right. It reads "Stage" with a bar chart icon and links to `stage.html`.
+Every bistro page has a **corner tab** fixed to the top-right reading "Stage", linking to `stage.html`.
 
 ### Cross-links within content
-- Dine & Show card on `stage.html` links to `whats-on.html`
-- `book-a-table.html` footer note links to `whats-on.html`
-- `contact_stage.html` footer note links to `contact_stage.html`
-- Footer on all pages links to `stage.html`
+- `bistro.html` dine & show card → `whats-on.html`; CTA → `menu.html`
+- `book-a-table.html` inline note → `whats-on.html`
+- `contact_bistro.html` inline note → `contact_stage.html`
+- Footer on every bistro page links to `stage.html`
+
+---
+
+## Newsletter Signup (`newsletter.js`)
+
+A lightweight MailChimp signup handler included on **every content page** (not on the landing page).
+
+How it works:
+- On `DOMContentLoaded`, it binds a `submit` handler to every `.newsletter-form`
+- It serialises the form, rewrites the form's MailChimp `action` from `/post?` to `/post-json?`, and fires a **JSONP** request (avoiding CORS / page reload)
+- On success it replaces the `.newsletter-strip` container's contents with a "Thanks for subscribing" message
+- On error it strips HTML/error-code prefixes from MailChimp's message and shows it as a `.newsletter-error` above the form
+
+Requirements for the markup it expects:
+- A `.newsletter-strip` container wrapping a `.newsletter-form`
+- The form's `action` set to the MailChimp `…/post?u=…&id=…` endpoint
 
 ---
 
 ## Shared Components & Patterns
 
-These patterns appear consistently across both sites. When adding new pages, follow these templates exactly.
+These patterns appear consistently across the stage and bistro pages. When adding new pages, follow these templates.
 
 ### Corner Tab
 ```html
-<a class="corner-tab" href="[other-site].html">
+<a class="corner-tab" href="[other-side].html">
   <svg ...>...</svg>
   [Stage or Bistro]
 </a>
@@ -169,7 +213,7 @@ Fixed top-right, z-index 100, gold text, gold border, blurred dark background.
 ```html
 <nav>
   <a class="nav-logo" href="index.html">
-    <img src="logo.png" alt="Stage & Stem" /> 
+    <img src="logo.png" alt="Stage & Stem" />
   </a>
   <ul class="nav-links">
     <li><a href="..." class="active">Active Page</a></li>
@@ -212,7 +256,7 @@ Add `class="active"` to the current page link.
   <p class="footer-copy">Stage &amp; Stem &nbsp;·&nbsp; Performance Space &amp; Bistro</p>
   <ul class="footer-links">
     <li><a href="...">Link</a></li>
-    <!-- Always include a cross-link to the other site as the last item -->
+    <!-- Always include a cross-link to the other side as the last item -->
     <li><a href="bistro.html">Bistro →</a></li>
   </ul>
 </footer>
@@ -225,40 +269,51 @@ Add `class="active"` to the current page link.
 
 ---
 
-## Relative Paths — Important
+## Paths
 
-Because the sites live in subdirectories, paths must go up one level with `../` to reach shared assets:
-
-| From | To logo | To other site |
-|---|---|---|
-| `landing.html` | `logo_left.png` | `stage.html` |
-| `stage/*.html` | `../logo_left.png` | `bistro.html` |
-| `bistro/*.html` | `../logo_right.png` | `stage.html` |
-
-Each site's `style.css` lives inside its own folder and is referenced as `style.css` (no `../` needed).
+Because the site is flat (all files in the root), every link and asset
+reference is a plain filename — no `../` and no subfolder prefixes. For
+example, pages link to `logo.png`, `style-stage.css`, `bistro.html`, etc.
+directly. Keep all files in the same directory and everything resolves.
 
 ---
 
 ## What's Been Built
 
-- [x] Landing / split entry page with logo half-fade on hover
-- [x] Stage site — 4 pages + CSS
-- [x] Bistro site — 4 pages + CSS
+- [x] Landing / split entry page with logo half-fade on hover (`index.html`)
+- [x] Stage pages — 4 pages + `style-stage.css`
+- [x] Bistro pages — 4 pages + `style-bistro.css`
 - [x] Corner tab cross-linking on all pages
 - [x] Contextual cross-links (e.g. Dine & Show → What's On)
 - [x] Placeholder menu with example dishes and prices
+- [x] Newsletter signup wired to MailChimp (`newsletter.js`)
 
 ## What Still Needs Building / Improving
 
-- [ ] Google Sheets integration for events (so the client can update What's On without touching code)
-- [ ] Proper events/ticketing on `stage/whats-on.html`
-- [ ] Contact forms (currently email links only)
+- [ ] Google Sheets (or similar) integration for events, so the client can update What's On without touching code
+- [ ] Proper events/ticketing on `whats-on.html`
+- [ ] Contact & booking forms (currently email links only)
 - [ ] Mobile navigation (hamburger menu for small screens)
 - [ ] SEO meta tags, Open Graph tags, JSON-LD structured data
 - [ ] Instagram feed or social links
 - [ ] Real content from the client (copy, images, actual menu)
 - [ ] About page for each side, or a shared About page
-- [ ] Possible coming-soon page at the root while the full site is finished
+
+---
+
+## Known Issues / Cleanup Candidates
+
+These don't break the live site but are worth tidying in a future pass:
+
+- **`menus.html` is a redundant duplicate.** It is byte-identical to
+  `menu.html`, and no page links to it (all nav/menu links point to
+  `menu.html`). Safe to delete.
+- **`style 3.css` is an orphan.** It carries the warm bistro tokens but is
+  not referenced by any HTML page. Either remove it or fold any needed rules
+  into `style-bistro.css`.
+- **`.DS_Store` is tracked in git.** This is a macOS Finder metadata file
+  with no purpose in the repo. It should be removed and added to a
+  `.gitignore`.
 
 ---
 
@@ -268,9 +323,9 @@ Each site's `style.css` lives inside its own folder and is referenced as `style.
 **Method:** File Manager → upload to `public_html`  
 **Domain:** stageandstem.com
 
-Upload the entire folder structure as-is. All relative paths are set up correctly — as long as the folder structure is maintained, everything will resolve.
-
-The previous coming-soon page (`index.html` at the root with `logo.png`) was already live and approved by the client. The new `landing.html` would replace or sit alongside it.
+The site is flat, so upload all files into `public_html` together (no
+subfolders to recreate). `index.html` serves as the landing page at the
+domain root.
 
 ---
 
@@ -278,5 +333,5 @@ The previous coming-soon page (`index.html` at the root with `logo.png`) was alr
 
 - Client is non-technical — any content update system should be simple (e.g. Google Sheets for events)
 - The client has existing Fasthosts hosting and domain
-- The logo exists as JPEG (with black background) and as two split PNGs (`logo_left.png`, `logo_right.png`)
+- The logo currently exists as `logo.png` (full) and as two split halves (`logo_left.png`, `logo_right.png`)
 - For best results, a transparent-background PNG of the full logo would be ideal
