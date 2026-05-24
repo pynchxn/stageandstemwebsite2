@@ -348,6 +348,21 @@ footer {
 }
 .footer-links a:hover { color: var(--accent); }
 
+/* ── SOCIAL LINKS ── */
+.social-links {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  list-style: none;
+}
+.social-links a {
+  display: inline-flex;
+  color: rgba(245,242,237,0.35);
+  transition: color 0.3s;
+}
+.social-links a:hover { color: var(--accent); }
+.social-links svg { width: 18px; height: 18px; display: block; }
+
 @media (max-width: 768px) {
   nav { padding: 1.4rem 1.5rem; }
   .nav-links { gap: 1.2rem; }
