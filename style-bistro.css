@@ -266,6 +266,15 @@ nav {
   line-height: 1.9;
   color: var(--muted);
 }
+a.card { display: block; text-decoration: none; color: inherit; }
+.card-cta {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
 
 /* ── NEWSLETTER STRIP ── */
 .newsletter-strip {
