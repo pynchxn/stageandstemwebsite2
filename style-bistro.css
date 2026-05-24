@@ -266,7 +266,9 @@ nav {
   line-height: 1.9;
   color: var(--muted);
 }
-a.card { display: block; text-decoration: none; color: inherit; }
+a.card { display: block; text-decoration: none; color: var(--white); }
+a.card .card-title { color: var(--white); }
+a.card .card-body  { color: var(--muted); }
 .card-cta {
   display: inline-block;
   margin-top: 1rem;
