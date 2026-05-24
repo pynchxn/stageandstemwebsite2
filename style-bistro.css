@@ -402,7 +402,7 @@ footer {
 }
 
 @media (max-width: 768px) {
-  nav { padding: 1.4rem 1.5rem; position: relative; }
+  nav { padding: 1.4rem 1.5rem; position: relative; z-index: 200; }
   .nav-burger {
     display: flex;
     flex-direction: column;
