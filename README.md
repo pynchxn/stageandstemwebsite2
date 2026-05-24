@@ -61,7 +61,6 @@ All files are in the repository root:
 │
 ├── style-stage.css         ← Stage styles (cool, indigo-tinted)
 ├── style-bistro.css        ← Bistro styles (warm, amber-tinted)
-├── style 3.css             ← Orphan stylesheet (unused — see Known Issues)
 │
 ├── newsletter.js           ← MailChimp newsletter signup handler
 │
@@ -308,9 +307,6 @@ These don't break the live site but are worth tidying in a future pass:
 - **`menus.html` is a redundant duplicate.** It is byte-identical to
   `menu.html`, and no page links to it (all nav/menu links point to
   `menu.html`). Safe to delete.
-- **`style 3.css` is an orphan.** It carries the warm bistro tokens but is
-  not referenced by any HTML page. Either remove it or fold any needed rules
-  into `style-bistro.css`.
 - **`.DS_Store` is tracked in git.** This is a macOS Finder metadata file
   with no purpose in the repo. It should be removed and added to a
   `.gitignore`.
