@@ -49,19 +49,20 @@ All files are in the repository root:
 ├── index.html              ← Split landing / entry page (self-contained)
 │
 ├── stage.html              ← Stage home
-├── whats-on.html           ← Stage: events/programme
+├── whats-on.html           ← Stage: events/programme with filter tabs
 ├── perform-with-us.html    ← Stage: performer & hire enquiries
 ├── contact_stage.html      ← Stage contact
+├── book_stage.html         ← Stage: Eventbrite ticket booking page
 │
 ├── bistro.html             ← Bistro home
-├── menus.html              ← Bistro: food & drink menu (links to PDF menus)
+├── menus.html              ← Bistro: food & drink menu
 ├── book-a-table.html       ← Bistro: table reservations
 ├── contact_bistro.html     ← Bistro contact
 │
 ├── style-stage.css         ← Stage styles (cool, indigo-tinted)
 ├── style-bistro.css        ← Bistro styles (warm, amber-tinted)
 │
-├── newsletter.js           ← MailChimp newsletter signup handler
+├── newsletter.js           ← Mailchimp newsletter signup handler
 │
 ├── logo.png                ← Full logo (nav)
 ├── logo_left.png           ← Left half (landing page)
@@ -112,25 +113,25 @@ Cool, theatrical, dark. Background has a subtle deep indigo/purple tint. Hover s
 --font-serif: 'Cormorant Garamond', serif
 --font-sans: 'Montserrat', sans-serif
 ```
-Includes a `.card-date` class for event dates.
+
+Includes event calendar classes: `.filter-tabs`, `.filter-tab`, `.events-list`, `.event-row`, `.event-row-date`, `.event-row-day`, `.event-row-month`, `.event-row-tag`, `.event-row-name`, `.event-row-detail`, `.event-row-action`, `.event-row-price`, `.sold-out`, `.sold-out-badge`, `.hire-banner`, `.btn--gold`.
 
 ### Pages
 | File | Purpose |
 |---|---|
 | `stage.html` | Stage home — hero + upcoming events cards |
-| `whats-on.html` | Programme/events listing |
+| `whats-on.html` | Programme/events listing with category filter tabs |
 | `perform-with-us.html` | Info for performers + hire enquiries |
 | `contact_stage.html` | Contact for performance/hire |
+| `book_stage.html` | Ticket booking via Eventbrite embed |
 
 ### Navigation (all stage pages)
-Home · What's On · Perform With Us · Contact — with the full `logo.png` as the nav logo.
-
-### Cross-link to Bistro
-Every stage page has a **corner tab** fixed to the top-right reading "Bistro", linking to `bistro.html`. Style: small gold uppercase text, gold border, dark blurred background.
+Home · What's On · Perform With Us · Contact · **Bistro** (gold crosslink) — with the full `logo.png` as the nav logo. The Bistro crosslink is styled as `.nav-crosslink-item` / `.nav-crosslink` and separated from the main links by a thin gold vertical border.
 
 ### Cross-links within content
 - `stage.html` cabaret card → `book-a-table.html`; CTAs → `whats-on.html`
-- `whats-on.html` cabaret card → `book-a-table.html`
+- `whats-on.html` event rows & Book Now buttons → `book_stage.html`
+- `whats-on.html` private hire banner → `contact_stage.html`
 - `perform-with-us.html` CTA → `contact_stage.html`
 - `contact_stage.html` inline note → `book-a-table.html`
 - Footer on every stage page links to `bistro.html`
@@ -154,21 +155,19 @@ Warm, candlelit, intimate. Background has a subtle amber/burgundy tint. Hover st
 --font-serif: 'Cormorant Garamond', serif
 --font-sans: 'Montserrat', sans-serif
 ```
-Adds menu and newsletter components: `.menu-section`, `.menu-item`, `.menu-item-name`, `.menu-item-price`, `.newsletter-strip`, `.newsletter-form`, `.newsletter-error` (`#c97070`).
+
+Adds menu and newsletter components: `.menu-section`, `.menu-item`, `.menu-item-name`, `.menu-item-price`, `.newsletter-strip`, `.newsletter-form`, `.newsletter-error`.
 
 ### Pages
 | File | Purpose |
 |---|---|
 | `bistro.html` | Bistro home — hero + dining info cards |
-| `menus.html` | Food & drink menu — links to PDF menus (food, drinks, cocktails) |
-| `book-a-table.html` | Reservation page (email-based for now) |
+| `menus.html` | Food & drink menu |
+| `book-a-table.html` | Reservation page (email-based) |
 | `contact_bistro.html` | Contact for dining/private hire |
 
 ### Navigation (all bistro pages)
-Home · Menu · Book a Table · Contact — with the full `logo.png` as the nav logo.
-
-### Cross-link to Stage
-Every bistro page has a **corner tab** fixed to the top-right reading "Stage", linking to `stage.html`.
+Home · Menu · Book a Table · Contact · **Stage** (gold crosslink) — with the full `logo.png` as the nav logo.
 
 ### Cross-links within content
 - `bistro.html` dine & show card → `whats-on.html`; CTA → `menus.html`
@@ -180,17 +179,78 @@ Every bistro page has a **corner tab** fixed to the top-right reading "Stage", l
 
 ## Newsletter Signup (`newsletter.js`)
 
-A lightweight MailChimp signup handler included on **every content page** (not on the landing page).
+A lightweight Mailchimp signup handler included on **every content page** (not on the landing page).
+
+**Mailchimp list:** `stageandstem.us18.list-manage.com` — list ID `05e230634f`, tag `3021990`.
 
 How it works:
 - On `DOMContentLoaded`, it binds a `submit` handler to every `.newsletter-form`
-- It serialises the form, rewrites the form's MailChimp `action` from `/post?` to `/post-json?`, and fires a **JSONP** request (avoiding CORS / page reload)
-- On success it replaces the `.newsletter-strip` container's contents with a "Thanks for subscribing" message
-- On error it strips HTML/error-code prefixes from MailChimp's message and shows it as a `.newsletter-error` above the form
+- Serialises the form, rewrites the Mailchimp `action` from `/post?` to `/post-json?`, and fires a **JSONP** request (no CORS / no page reload)
+- On success: replaces the `.newsletter-strip` contents with a "Thanks for subscribing" message
+- On error: strips HTML/error-code prefixes from Mailchimp's message and shows it as `.newsletter-error` above the form
+
+**Fields collected:** First name (`FNAME`), Last name (`LNAME`), Email (`EMAIL`).
 
 Requirements for the markup it expects:
 - A `.newsletter-strip` container wrapping a `.newsletter-form`
-- The form's `action` set to the MailChimp `…/post?u=…&id=…` endpoint
+- The form's `action` set to the Mailchimp `.../post?u=...&id=...` endpoint
+- The honeypot field (`b_...`) must be present
+
+---
+
+## Events Calendar (`whats-on.html`)
+
+The What's On page uses a filterable event list. Each event row links to `book_stage.html`.
+
+### Filter tabs
+```html
+<div class="filter-tabs">
+  <div class="filter-tab active" data-filter="All Events">All Events</div>
+  <div class="filter-tab" data-filter="Music">Music</div>
+  <!-- Comedy, Theatre, Special -->
+</div>
+```
+An inline `<script>` at the bottom of `whats-on.html` handles tab clicks and shows/hides rows by matching `data-filter` against `data-category` on each `.event-row`.
+
+### Event row
+```html
+<div class="event-row" data-category="Music" onclick="location.href='book_stage.html'">
+  <div class="event-row-date">
+    <div class="event-row-day">12</div>
+    <div class="event-row-month">Apr 2026</div>
+  </div>
+  <div>
+    <div class="event-row-tag">Jazz · Live Music</div>
+    <div class="event-row-name">An Evening of Jazz</div>
+    <div class="event-row-detail">Details · Doors 6:30pm · Show 8pm</div>
+  </div>
+  <div class="event-row-action">
+    <div class="event-row-price">£45 <span>per person</span></div>
+    <a href="book_stage.html" class="btn btn--gold">Book Now</a>
+  </div>
+</div>
+```
+
+### Sold out event
+Add `class="event-row sold-out"`, remove the `onclick`, and replace the action div with:
+```html
+<div class="event-row-action">
+  <div class="sold-out-badge">Sold Out</div>
+</div>
+```
+
+---
+
+## Ticket Booking (`book_stage.html`)
+
+A Stage-branded page that embeds the Eventbrite booking widget.
+
+**To wire up Eventbrite:**
+1. Log in to Eventbrite → Manage Events → your event → Promote → Embed
+2. Copy the widget code
+3. In `book_stage.html`, find the `<!-- EVENTBRITE EMBED -->` comment block and replace the placeholder `<div>` and `<script>` tags with your copied embed code
+
+The page currently uses `widgetType: 'checkout'` for a single event. If you want to show all events in one widget, Eventbrite also supports `widgetType: 'collection'` with a `collectionId`.
 
 ---
 
@@ -198,28 +258,27 @@ Requirements for the markup it expects:
 
 These patterns appear consistently across the stage and bistro pages. When adding new pages, follow these templates.
 
-### Corner Tab
-```html
-<a class="corner-tab" href="[other-side].html">
-  <svg ...>...</svg>
-  [Stage or Bistro]
-</a>
-```
-Fixed top-right, z-index 100, gold text, gold border, blurred dark background.
-
 ### Navigation
 ```html
 <nav>
   <a class="nav-logo" href="index.html">
     <img src="logo.png" alt="Stage & Stem" />
   </a>
+  <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+  <label class="nav-burger" for="nav-toggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </label>
   <ul class="nav-links">
     <li><a href="..." class="active">Active Page</a></li>
     ...
+    <!-- Always last — crosslink to the other side -->
+    <li class="nav-crosslink-item">
+      <a href="bistro.html" class="nav-crosslink">Bistro</a>
+    </li>
   </ul>
 </nav>
 ```
-Add `class="active"` to the current page link.
+Add `class="active"` to the current page link. The crosslink is always the final `<li>`, separated by a thin gold left border via `.nav-crosslink-item`.
 
 ### Section layout
 ```html
@@ -246,7 +305,29 @@ Add `class="active"` to the current page link.
 ```html
 <a class="btn btn-primary" href="...">Primary Action</a>
 <a class="btn btn-outline" href="...">Secondary Action</a>
+<a class="btn btn--gold" href="...">Gold Action (events)</a>
 ```
+
+### Newsletter strip
+```html
+<div class="newsletter-strip">
+  <p class="newsletter-eyebrow">Stay in the loop</p>
+  <h2 class="newsletter-title">Updates, direct to your inbox</h2>
+  <p class="newsletter-sub">Your copy here.</p>
+  <form action="https://stageandstem.us18.list-manage.com/subscribe/post?u=f675c39799c38096ac60029aa&id=05e230634f&f_id=00d9a9e6f0"
+        method="post" name="mc-embedded-subscribe-form" class="newsletter-form" target="_self" novalidate>
+    <input type="text" name="FNAME" placeholder="First name">
+    <input type="text" name="LNAME" placeholder="Last name">
+    <input type="email" name="EMAIL" placeholder="Your email address" required>
+    <input type="hidden" name="tags" value="3021990">
+    <div aria-hidden="true" style="position:absolute;left:-5000px">
+      <input type="text" name="b_f675c39799c38096ac60029aa_05e230634f" tabindex="-1" value="">
+    </div>
+    <button type="submit">Subscribe</button>
+  </form>
+</div>
+```
+Include `<script src="newsletter.js"></script>` before `</body>` on every page that uses this.
 
 ### Footer
 ```html
@@ -257,8 +338,15 @@ Add `class="active"` to the current page link.
     <!-- Always include a cross-link to the other side as the last item -->
     <li><a href="bistro.html">Bistro →</a></li>
   </ul>
+  <ul class="social-links">
+    <li><a href="https://www.instagram.com/stageandstem/" aria-label="Instagram"><!-- svg --></a></li>
+    <li><a href="#" aria-label="Facebook"><!-- svg --></a></li>
+    <li><a href="#" aria-label="TikTok"><!-- svg --></a></li>
+    <li><a href="#" aria-label="X (Twitter)"><!-- svg --></a></li>
+  </ul>
 </footer>
 ```
+Social links use inline SVG icons. Facebook, TikTok and X currently link to `#` — update when accounts are live.
 
 ### Gold rule divider
 ```html
@@ -269,43 +357,39 @@ Add `class="active"` to the current page link.
 
 ## Paths
 
-Because the site is flat (all files in the root), every link and asset
-reference is a plain filename — no `../` and no subfolder prefixes. For
-example, pages link to `logo.png`, `style-stage.css`, `bistro.html`, etc.
-directly. Keep all files in the same directory and everything resolves.
+Because the site is flat (all files in the root), every link and asset reference is a plain filename — no `../` and no subfolder prefixes. For example, pages link to `logo.png`, `style-stage.css`, `bistro.html`, etc. directly. Keep all files in the same directory and everything resolves.
 
 ---
 
 ## What's Been Built
 
 - [x] Landing / split entry page with logo half-fade on hover (`index.html`)
-- [x] Stage pages — 4 pages + `style-stage.css`
+- [x] Stage pages — 5 pages + `style-stage.css`
 - [x] Bistro pages — 4 pages + `style-bistro.css`
-- [x] Corner tab cross-linking on all pages
+- [x] Nav crosslinks on all pages (Bistro link on stage pages, Stage link on bistro pages)
 - [x] Contextual cross-links (e.g. Dine & Show → What's On)
 - [x] Placeholder menu with example dishes and prices
-- [x] Newsletter signup wired to MailChimp (`newsletter.js`)
+- [x] Newsletter signup strip on all content pages, wired to Mailchimp (`newsletter.js`)
+- [x] Events calendar on `whats-on.html` with category filter tabs and sold-out support
+- [x] Ticket booking page (`book_stage.html`) with Eventbrite embed placeholder
+- [x] Social links in footer of all pages (Instagram live, Facebook/TikTok/X placeholder)
+- [x] Mobile hamburger nav on all pages
 
 ## What Still Needs Building / Improving
 
-- [ ] Google Sheets (or similar) integration for events, so the client can update What's On without touching code
-- [ ] Proper events/ticketing on `whats-on.html`
-- [ ] Contact & booking forms (currently email links only)
-- [ ] Mobile navigation (hamburger menu for small screens)
-- [ ] SEO meta tags, Open Graph tags, JSON-LD structured data
-- [ ] Instagram feed or social links
+- [ ] Wire up Eventbrite event ID in `book_stage.html` (replace placeholder embed)
+- [ ] Update Facebook, TikTok and X social links when accounts are live
 - [ ] Real content from the client (copy, images, actual menu)
+- [ ] Contact & booking forms (currently email links only)
+- [ ] SEO meta tags, Open Graph tags, JSON-LD structured data
 - [ ] About page for each side, or a shared About page
+- [ ] Google Sheets (or similar) integration for events, so the client can update What's On without touching code
 
 ---
 
 ## Known Issues / Cleanup Candidates
 
-These don't break the live site but are worth tidying in a future pass:
-
-- **`.DS_Store` is tracked in git.** This is a macOS Finder metadata file
-  with no purpose in the repo. It should be removed and added to a
-  `.gitignore`.
+- **`.DS_Store` is tracked in git.** This is a macOS Finder metadata file with no purpose in the repo. It should be removed and added to a `.gitignore`.
 
 ---
 
@@ -315,9 +399,7 @@ These don't break the live site but are worth tidying in a future pass:
 **Method:** File Manager → upload to `public_html`  
 **Domain:** stageandstem.com
 
-The site is flat, so upload all files into `public_html` together (no
-subfolders to recreate). `index.html` serves as the landing page at the
-domain root.
+The site is flat, so upload all files into `public_html` together (no subfolders to recreate). `index.html` serves as the landing page at the domain root.
 
 ---
 
@@ -325,5 +407,5 @@ domain root.
 
 - Client is non-technical — any content update system should be simple (e.g. Google Sheets for events)
 - The client has existing Fasthosts hosting and domain
-- The logo currently exists as `logo.png` (full) and as two split halves (`logo_left.png`, `logo_right.png`)
+- Logo exists as `logo.png` (full) and as two split halves (`logo_left.png`, `logo_right.png`)
 - For best results, a transparent-background PNG of the full logo would be ideal
