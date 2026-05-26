@@ -59,6 +59,8 @@ All files are in the repository root:
 ├── book-a-table.html       ← Bistro: table reservations
 ├── contact_bistro.html     ← Bistro contact
 │
+├── 404.html                ← Custom 404 page (noindex)
+│
 ├── style-stage.css         ← Stage styles (cool, indigo-tinted)
 ├── style-bistro.css        ← Bistro styles (warm, amber-tinted)
 │
@@ -66,7 +68,17 @@ All files are in the repository root:
 │
 ├── logo.png                ← Full logo (nav)
 ├── logo_left.png           ← Left half (landing page)
-└── logo_right.png          ← Right half (landing page)
+├── logo_right.png          ← Right half (landing page)
+│
+├── og-image.png            ← Social-share image (1200×600), referenced by every page's og:image
+├── favicon.ico             ← Browser tab icon (16/32/48 multi-size)
+├── favicon-32.png          ← Modern-browser PNG favicon
+├── apple-touch-icon.png    ← iOS home-screen icon (180×180)
+├── Favicon-source.png      ← 1024×1024 source — regenerate the favicon set from this
+│
+├── .htaccess               ← Apache rewrites (404, www → non-www, HTTPS-ready)
+├── robots.txt              ← Crawler directives + sitemap pointer
+└── sitemap.xml             ← Page list for search engines
 ```
 
 Stage pages load `style-stage.css`; bistro pages load `style-bistro.css`. The landing page has its own inline styles and loads neither.
@@ -355,6 +367,58 @@ Social links use inline SVG icons. Facebook, TikTok and X currently link to `#` 
 
 ---
 
+## SEO & Discoverability
+
+Every content page carries the same SEO scaffolding directly in its `<head>` — there is no template engine, so additions are duplicated across pages.
+
+### Per-page head additions
+Each page adds the following after `<title>`:
+- `<meta name="description">` — unique 140–160 character summary
+- `<link rel="canonical" href="https://stageandstem.com/...">`
+- Open Graph: `og:type`, `og:site_name`, `og:locale` (`en_GB`), `og:title`, `og:description`, `og:url`, `og:image`, `og:image:width` / `og:image:height`
+- Twitter Cards: `twitter:card` (`summary_large_image`), `twitter:title`, `twitter:description`, `twitter:image`
+- Favicons: `<link rel="icon" href="/favicon.ico">`, `<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">`, `<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">`
+- `<meta name="theme-color">` — `#08080f` on stage / landing / 404, `#0d0905` on bistro pages
+
+`og-image.png` (1200×600) is the shared social-share image referenced by every page's `og:image` / `twitter:image`.
+
+The landing page also includes a `.visually-hidden` `<h1>` ("Stage & Stem — Performance Space & Bistro in Cardiff") so the split layout still exposes a heading to crawlers and screen readers.
+
+`404.html` is set to `noindex, follow` and intentionally omits canonical / OG / JSON-LD.
+
+### Structured data (JSON-LD)
+Each page's `<head>` includes one or more `<script type="application/ld+json">` blocks:
+- **`Organization`** — on every content page. Carries name, URL, logo, image, `sameAs` (Instagram), Richmond Road `PostalAddress`, and a `contactPoint` with `info@stageandstem.com`.
+- **`Restaurant`** — on the four bistro pages (`bistro`, `menus`, `book-a-table`, `contact_bistro`). Includes `priceRange: "£"`, `currenciesAccepted: "GBP"`, `hasMenu: ".../menus.html"`, `acceptsReservations: true`.
+- **`PerformingArtsTheater`** — on the five stage pages (`stage`, `whats-on`, `perform-with-us`, `contact_stage`, `book_stage`).
+
+Restaurant and Theater both link back to the Organization via `parentOrganization: { "@id": "https://stageandstem.com/#organization" }`.
+
+**Currently omitted from the schema** (add as a follow-up when known): `telephone`, `openingHoursSpecification`, `servesCuisine`.
+
+### `sitemap.xml` and `robots.txt`
+`sitemap.xml` lists the 10 indexable pages (`404.html` is excluded) with `<lastmod>`, `<changefreq>` and `<priority>`. `robots.txt` allows all crawlers and points to the sitemap.
+
+After deploying, submit `https://stageandstem.com/sitemap.xml` to Google Search Console.
+
+### `.htaccess`
+- `ErrorDocument 404 /404.html`
+- 301 redirect: `www.stageandstem.com` → `stageandstem.com`
+- Force-HTTPS rule is **commented out** — uncomment the two `RewriteCond %{HTTPS} off` / `RewriteRule` lines once SSL is provisioned on the domain.
+
+### Favicon assets
+Three favicon files (`favicon.ico`, `favicon-32.png`, `apple-touch-icon.png`) are derived from `Favicon-source.png` (1024×1024 PNG — comedy mask + wine glass on black). To regenerate them after editing the source, run any favicon tool (e.g. realfavicongenerator.net), or use Pillow:
+
+```python
+from PIL import Image
+src = Image.open("Favicon-source.png").convert("RGBA")
+src.resize((180, 180), Image.LANCZOS).convert("RGB").save("apple-touch-icon.png", "PNG", optimize=True)
+src.resize((32, 32), Image.LANCZOS).save("favicon-32.png", "PNG", optimize=True)
+src.save("favicon.ico", format="ICO", sizes=[(16, 16), (32, 32), (48, 48)])
+```
+
+---
+
 ## Paths
 
 Because the site is flat (all files in the root), every link and asset reference is a plain filename — no `../` and no subfolder prefixes. For example, pages link to `logo.png`, `style-stage.css`, `bistro.html`, etc. directly. Keep all files in the same directory and everything resolves.
@@ -374,6 +438,10 @@ Because the site is flat (all files in the root), every link and asset reference
 - [x] Ticket booking page (`book_stage.html`) with Eventbrite embed placeholder
 - [x] Social links in footer of all pages (Instagram live, Facebook/TikTok/X placeholder)
 - [x] Mobile hamburger nav on all pages
+- [x] SEO foundation: per-page meta descriptions, canonical URLs, Open Graph & Twitter Cards
+- [x] JSON-LD structured data (`Organization` sitewide; `Restaurant` on bistro pages; `PerformingArtsTheater` on stage pages)
+- [x] Favicon set (ICO + 32px PNG + 180px apple-touch) generated from `Favicon-source.png`
+- [x] `robots.txt`, `sitemap.xml`, and `.htaccess` redirects (404, www → non-www, HTTPS-ready)
 
 ## What Still Needs Building / Improving
 
@@ -381,7 +449,9 @@ Because the site is flat (all files in the root), every link and asset reference
 - [ ] Update Facebook, TikTok and X social links when accounts are live
 - [ ] Real content from the client (copy, images, actual menu)
 - [ ] Contact & booking forms (currently email links only)
-- [ ] SEO meta tags, Open Graph tags, JSON-LD structured data
+- [ ] Phone number, opening hours and `servesCuisine` — currently omitted from JSON-LD; add when confirmed
+- [ ] Uncomment the force-HTTPS rule in `.htaccess` once SSL is provisioned on the domain
+- [ ] Submit `sitemap.xml` to Google Search Console after first deploy
 - [ ] About page for each side, or a shared About page
 - [ ] Google Sheets (or similar) integration for events, so the client can update What's On without touching code
 
