@@ -391,6 +391,7 @@ Each page's `<head>` includes one or more `<script type="application/ld+json">` 
 - **`Organization`** — on every content page. Carries name, URL, logo, image, `sameAs` (Instagram), Richmond Road `PostalAddress`, and a `contactPoint` with `info@stageandstem.com`.
 - **`Restaurant`** — on the four bistro pages (`bistro`, `menus`, `book-a-table`, `contact_bistro`). Includes `priceRange: "£"`, `currenciesAccepted: "GBP"`, `hasMenu: ".../menus.html"`, `acceptsReservations: true`.
 - **`PerformingArtsTheater`** — on the five stage pages (`stage`, `whats-on`, `perform-with-us`, `contact_stage`, `book_stage`).
+- **`FAQPage`** — on both contact pages (`contact_bistro`, `contact_stage`), mirroring the visible FAQ section on each page (opening hours / bookings / parking / accessibility, etc.).
 
 Restaurant and Theater both link back to the Organization via `parentOrganization: { "@id": "https://stageandstem.com/#organization" }`.
 
