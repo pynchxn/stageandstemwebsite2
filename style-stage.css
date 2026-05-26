@@ -599,7 +599,7 @@ footer {
 .faq-question {
   font-family: var(--font-serif);
   font-style: italic;
-  font-weight: 400;
+  font-weight: 300;
   font-size: 1.15rem;
   color: var(--white);
   padding: 1.2rem 2.5rem 1.2rem 0;
@@ -628,7 +628,7 @@ footer {
 .faq-question:hover { color: var(--accent); }
 .faq-answer {
   padding: 0 0 1.4rem 0;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   line-height: 1.9;
   color: var(--muted);
 }
