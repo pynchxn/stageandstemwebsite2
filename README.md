@@ -74,7 +74,7 @@ All files are in the repository root:
 ├── favicon.ico             ← Browser tab icon (16/32/48 multi-size)
 ├── favicon-32.png          ← Modern-browser PNG favicon
 ├── apple-touch-icon.png    ← iOS home-screen icon (180×180)
-├── Favicon-source.png      ← 1024×1024 source — regenerate the favicon set from this
+├── favicon-source.png      ← 1024×1024 source — regenerate the favicon set from this
 │
 ├── .htaccess               ← Apache rewrites (404, www → non-www, HTTPS-ready)
 ├── robots.txt              ← Crawler directives + sitemap pointer
@@ -408,11 +408,11 @@ After deploying, submit `https://stageandstem.com/sitemap.xml` to Google Search 
 - Force-HTTPS rule is **commented out** — uncomment the two `RewriteCond %{HTTPS} off` / `RewriteRule` lines once SSL is provisioned on the domain.
 
 ### Favicon assets
-Three favicon files (`favicon.ico`, `favicon-32.png`, `apple-touch-icon.png`) are derived from `Favicon-source.png` (1024×1024 PNG — comedy mask + wine glass on black). To regenerate them after editing the source, run any favicon tool (e.g. realfavicongenerator.net), or use Pillow:
+Three favicon files (`favicon.ico`, `favicon-32.png`, `apple-touch-icon.png`) are derived from `favicon-source.png` (1024×1024 PNG — comedy mask + wine glass on black). To regenerate them after editing the source, run any favicon tool (e.g. realfavicongenerator.net), or use Pillow:
 
 ```python
 from PIL import Image
-src = Image.open("Favicon-source.png").convert("RGBA")
+src = Image.open("favicon-source.png").convert("RGBA")
 src.resize((180, 180), Image.LANCZOS).convert("RGB").save("apple-touch-icon.png", "PNG", optimize=True)
 src.resize((32, 32), Image.LANCZOS).save("favicon-32.png", "PNG", optimize=True)
 src.save("favicon.ico", format="ICO", sizes=[(16, 16), (32, 32), (48, 48)])
@@ -441,7 +441,7 @@ Because the site is flat (all files in the root), every link and asset reference
 - [x] Mobile hamburger nav on all pages
 - [x] SEO foundation: per-page meta descriptions, canonical URLs, Open Graph & Twitter Cards
 - [x] JSON-LD structured data (`Organization` sitewide; `Restaurant` on bistro pages; `PerformingArtsTheater` on stage pages)
-- [x] Favicon set (ICO + 32px PNG + 180px apple-touch) generated from `Favicon-source.png`
+- [x] Favicon set (ICO + 32px PNG + 180px apple-touch) generated from `favicon-source.png`
 - [x] `robots.txt`, `sitemap.xml`, and `.htaccess` redirects (404, www → non-www, HTTPS-ready)
 
 ## What Still Needs Building / Improving
