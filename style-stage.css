@@ -461,6 +461,7 @@ nav {
 .faq-a {
   display: grid;
   grid-template-rows: 0fr;
+  overflow: hidden;
   transition: grid-template-rows 0.35s ease;
 }
 .faq-a > div {
@@ -468,6 +469,8 @@ nav {
   font-size: 0.72rem;
   line-height: 1.9;
   color: var(--muted);
+  padding-bottom: 0;
+  transition: padding-bottom 0.35s ease;
 }
 .faq-item.open .faq-a { grid-template-rows: 1fr; }
 .faq-item.open .faq-a > div { padding-bottom: 1.5rem; }
