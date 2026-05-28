@@ -149,6 +149,13 @@
     /* When bistro (right) hovered — fade LEFT half */
     body.hover-bistro .logo-left  { opacity: 0.12; }
 
+    /* Tapped/hovered panel — label fully revealed */
+    body.hover-stage  .panel--stage  .panel__label,
+    body.hover-bistro .panel--bistro .panel__label {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translate(-50%, -50%) scale(0.92); }
       to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
@@ -186,11 +193,9 @@
     }
     @media (hover: none) and (pointer: coarse) {
       .panel__label {
-        opacity: 1;
+        opacity: 0.35;
         transform: translateY(0);
         font-size: 1rem;
-        bottom: 22%;
-        top: auto;
       }
     }
   </style>
@@ -230,6 +235,26 @@
 
     bistro.addEventListener('mouseenter', () => document.body.classList.add('hover-bistro'));
     bistro.addEventListener('mouseleave', () => document.body.classList.remove('hover-bistro'));
+
+    if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
+      var tapped = null;
+      stage.addEventListener('click', function(e) {
+        if (tapped !== stage) {
+          e.preventDefault();
+          tapped = stage;
+          document.body.classList.add('hover-stage');
+          document.body.classList.remove('hover-bistro');
+        }
+      });
+      bistro.addEventListener('click', function(e) {
+        if (tapped !== bistro) {
+          e.preventDefault();
+          tapped = bistro;
+          document.body.classList.add('hover-bistro');
+          document.body.classList.remove('hover-stage');
+        }
+      });
+    }
   </script>
 
 </body>
