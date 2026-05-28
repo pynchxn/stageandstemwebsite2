@@ -97,6 +97,7 @@ A full-screen split layout — the left panel links to the Stage, the right pane
 - On hover over either panel, the opposite half of the logo fades to ~12% opacity, highlighting the relevant side
 - A subtle gold vertical divider line runs behind the logo
 - On hover, a gold italic label fades in — "Performance Space" on the left, "Bistro" on the right
+- On touch devices (no hover), both labels are always visible at the bottom of their respective panels, so users know which side to tap
 - Hover also tints the panel background (cooler tint for stage, warmer for bistro)
 - Logo reveal animation on page load (fade in + scale up)
 
@@ -480,7 +481,7 @@ Because the site is flat (all files in the root), every link and asset reference
 
 ## What's Been Built
 
-- [x] Landing / split entry page with logo half-fade on hover (`index.html`)
+- [x] Landing / split entry page with logo half-fade on hover (`index.html`); panel labels permanently visible on touch devices
 - [x] Stage pages — 5 pages + `style-stage.css`
 - [x] Bistro pages — 4 pages + `style-bistro.css`
 - [x] Nav crosslinks on all pages (Bistro link on stage pages, Stage link on bistro pages)
