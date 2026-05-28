@@ -365,6 +365,58 @@ Social links use inline SVG icons. Facebook, TikTok and X currently link to `#` 
 <div class="rule"><div class="rule-gem"></div></div>
 ```
 
+### Contact page layout
+
+Both contact pages use a shared two-column layout. On desktop the left column holds contact info and the right column holds a Google Maps embed; on mobile both stack to a single column.
+
+```html
+<div class="section" style="padding-top:5rem;">
+  <p class="section-eyebrow">Get in Touch</p>
+  <h1 class="section-title">Contact the Stage</h1>
+  <div class="rule"><div class="rule-gem"></div></div>
+
+  <div class="contact-grid">
+    <div class="contact-info">
+      <!-- email button, address, social links, crosslink note -->
+    </div>
+    <div class="contact-map">
+      <iframe src="https://maps.google.com/maps?q=199+Richmond+Road+Cardiff+CF24+3BT&output=embed"
+              allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+              title="..."></iframe>
+    </div>
+  </div>
+
+  <div class="contact-faqs">
+    <h2 class="contact-faqs-title">Common Questions</h2>
+    <div class="faq-grid">
+      <div class="faq-entry">
+        <p class="faq-entry-q">Question label</p>
+        <p class="faq-entry-a">Answer text.</p>
+      </div>
+      <!-- repeat for each Q&A pair -->
+    </div>
+  </div>
+</div>
+```
+
+Key CSS classes:
+| Class | Purpose |
+|---|---|
+| `.contact-grid` | Two-column grid (1fr 1fr) with `gap: 4rem`; collapses to 1fr on mobile |
+| `.contact-info` | Left column — text, email button, address details, social links |
+| `.contact-map` | Right column — contains the map iframe |
+| `.contact-map iframe` | Full-width, 420px tall, gold border |
+| `.contact-detail` | Labelled detail block (address, hours, etc.) |
+| `.contact-detail-label` | Small uppercase accent-coloured label |
+| `.contact-detail-value` | Muted body text below the label |
+| `.contact-faqs` | FAQ section below the grid; top gold border, `margin-top: 5rem` |
+| `.contact-faqs-title` | Italic serif heading for the FAQ section |
+| `.faq-grid` | Two-column grid of Q&A entries; collapses to 1 column on mobile |
+| `.faq-entry-q` | Tiny uppercase gold question label |
+| `.faq-entry-a` | Muted answer text |
+
+The FAQ entries are static (no accordion, no JavaScript). All questions and answers are always visible.
+
 ---
 
 ## SEO & Discoverability
@@ -440,9 +492,10 @@ Because the site is flat (all files in the root), every link and asset reference
 - [x] Social links in footer of all pages (Instagram live, Facebook/TikTok/X placeholder)
 - [x] Mobile hamburger nav on all pages
 - [x] SEO foundation: per-page meta descriptions, canonical URLs, Open Graph & Twitter Cards
-- [x] JSON-LD structured data (`Organization` sitewide; `Restaurant` on bistro pages; `PerformingArtsTheater` on stage pages)
+- [x] JSON-LD structured data (`Organization` sitewide; `Restaurant` on bistro pages; `PerformingArtsTheater` on stage pages; `FAQPage` on both contact pages)
 - [x] Favicon set (ICO + 32px PNG + 180px apple-touch) generated from `favicon-source.png`
 - [x] `robots.txt`, `sitemap.xml`, and `.htaccess` redirects (404, www → non-www, HTTPS-ready)
+- [x] Contact page desktop layout — two-column grid (contact info + Google Maps embed) with FAQ grid below; responsive single-column on mobile
 
 ## What Still Needs Building / Improving
 
