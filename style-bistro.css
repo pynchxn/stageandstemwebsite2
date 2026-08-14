@@ -529,3 +529,45 @@ footer {
   width: 100%;
   border: 0;
 }
+
+/* ── BOOKING WIDGET (DesignMyNight) ── */
+/* color-scheme:dark makes the widget's native selects and date pickers render
+   in dark OS chrome. Without it the dropdown options are near-white on
+   near-white — DMN's own FAQ lists this as a common failure on dark sites. */
+.booking-widget {
+  color-scheme: dark;
+  max-width: 680px;
+}
+
+/* Only draw the container once DMN has actually rendered into it. If the script
+   is blocked (ad-blocker, corporate proxy) the wrapper still holds its <script>
+   child, so an unconditional border would leave a confusing empty box — and
+   <noscript> does not fire, because JS is enabled and merely the fetch failed.
+   :has(:not(script)) becomes true the moment the widget inserts any real
+   element, whatever it names its root.
+
+   Deliberately no overflow:hidden, transform or positioning here — unlike
+   .map-container above. Any of those would create a stacking context or clip a
+   dropdown or the stage-4 modal escaping the wrapper. */
+.booking-widget:has(:not(script)) {
+  border: 1px solid var(--accent-dim);
+  background: rgba(255,255,255,0.02);
+  padding: 2.2rem;
+}
+.booking-widget #dmn-partner-widget {
+  width: 100%;
+}
+.booking-alt {
+  margin-top: 1.5rem;
+  font-size: 0.75rem;
+  line-height: 1.9;
+  color: var(--muted);
+}
+.booking-alt a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .booking-widget:has(:not(script)) { padding: 1.5rem; }
+}

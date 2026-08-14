@@ -29,6 +29,11 @@
 
   <link rel="stylesheet" href="style-bistro.css" />
 
+  <!-- DesignMyNight booking widget theme. Colours MUST stay %23-encoded — a raw
+       '#' starts the URL fragment and the colour is silently dropped. -->
+  <link rel="preconnect" href="https://widgets.designmynight.com" />
+  <link rel="stylesheet" type="text/css" href="https://onsass.designmynight.com/?theme=dark&amp;primary-color=%23c9a96e&amp;background-color=%230d0905&amp;body-text-color=%23f5f2ed" />
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -78,6 +83,23 @@
     "currenciesAccepted": "GBP",
     "hasMenu": "https://stageandstem.com/menus.html",
     "acceptsReservations": true,
+    "potentialAction": {
+      "@type": "ReserveAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://stageandstem.com/book-a-table.html",
+        "inLanguage": "en-GB",
+        "actionPlatform": [
+          "http://schema.org/DesktopWebPlatform",
+          "http://schema.org/IOSPlatform",
+          "http://schema.org/AndroidPlatform"
+        ]
+      },
+      "result": {
+        "@type": "FoodEstablishmentReservation",
+        "name": "Table reservation"
+      }
+    },
     "parentOrganization": { "@id": "https://stageandstem.com/#organization" }
   }
   </script>
@@ -97,17 +119,53 @@
     </ul>
   </nav>
 
-  <div class="section" style="padding-top:5rem;max-width:680px;">
+  <div class="section" style="padding-top:5rem;">
     <p class="section-eyebrow">Reservations</p>
     <h1 class="section-title">Book a Table</h1>
     <div class="rule"><div class="rule-gem"></div></div>
-    <p style="color:var(--muted);font-size:0.8rem;line-height:2;margin-bottom:3rem;">
-      To make a reservation, please contact us directly and we'll be happy to arrange everything for you.
+    <p style="color:var(--muted);font-size:0.8rem;line-height:2;max-width:560px;margin-bottom:3rem;">
+      Choose your booking type, date, party size and time below.
     </p>
-    <a class="btn btn-primary" href="mailto:info@stageandstem.com?subject=Table%20Reservation">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 7l10 7 10-7" stroke-linecap="round"/></svg>
-      info@stageandstem.com
-    </a>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         DESIGNMYNIGHT BOOKING WIDGET
+         The widget renders into the PARENT ELEMENT of this script tag —
+         there is no container-id option. Do not move the script to the
+         end of the body; it must stay inside .booking-widget.
+
+         Venue ID and options come from Collins → Widget Wizard. If you
+         regenerate the code there, re-apply these fixes before pasting:
+           · src must be https://, not protocol-relative //
+           · drop locale="undefined" (a literal JS undefined leaks out)
+           · drop return-url/return-method (no backend to receive a POST,
+             and www→apex 301 would discard the body)
+           · swap the Wizard's placeholder colours for the brand palette
+             in the stylesheet <link> in <head>
+    ──────────────────────────────────────────────────────────────── -->
+    <div class="booking-widget">
+      <script src="https://widgets.designmynight.com/bookings-partner.min.js"
+              dmn-booking-form="true"
+              venue="6a590682cf09d068cf42ee25"
+              hide-offers="true"
+              hide-powered-by="false"
+              search-venues="false"
+              monday-first="true"
+              show-type-first="true"
+              custom-source="Website"></script>
+    </div>
+
+    <noscript>
+      <p class="booking-alt">
+        The booking form needs JavaScript.
+        <a href="https://bookings.designmynight.com/book?venue_id=6a590682cf09d068cf42ee25&amp;source=partner">Book on DesignMyNight →</a>
+      </p>
+    </noscript>
+    <!-- ── END BOOKING WIDGET ── -->
+
+    <p class="booking-alt">
+      Prefer to arrange it with us directly? <a href="mailto:info@stageandstem.com?subject=Table%20Reservation">info@stageandstem.com</a>
+    </p>
+
     <p style="margin-top:3rem;font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);">
       Planning a night out? &nbsp;<a href="whats-on.html" style="color:var(--accent);text-decoration:none;">See what's on at the Stage →</a>
     </p>

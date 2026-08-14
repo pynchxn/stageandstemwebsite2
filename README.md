@@ -176,7 +176,7 @@ Adds menu and newsletter components: `.menu-section`, `.menu-item`, `.menu-item-
 |---|---|
 | `bistro.html` | Bistro home — hero + dining info cards |
 | `menus.html` | Food & drink menu |
-| `book-a-table.html` | Reservation page (email-based) |
+| `book-a-table.html` | Reservation page — DesignMyNight (Collins) booking widget |
 | `contact_bistro.html` | Contact for dining/private hire |
 
 ### Navigation (all bistro pages)
@@ -251,6 +251,48 @@ Add `class="event-row sold-out"`, remove the `onclick`, and replace the action d
   <div class="sold-out-badge">Sold Out</div>
 </div>
 ```
+
+---
+
+## Table Booking (`book-a-table.html`)
+
+The Bistro reservation page embeds the **DesignMyNight (Collins) V2 booking widget**. Venue ID
+`6a590682cf09d068cf42ee25`. Requires the DMN Business Plan.
+
+Stages 1–3 (booking type, date/guests, time) render as **real elements inside the page**, so site CSS
+reaches them. Stage 4 is a DMN-hosted iframe/modal we cannot style without DMN whitelisting a
+stylesheet against the venue group — currently we accept their default there.
+
+**If you regenerate the code in Collins → Widget Wizard, re-apply these fixes before pasting it in.**
+The raw Wizard output ships with four defects:
+
+| Wizard output | Fix | Why |
+|---|---|---|
+| `src="//widgets…"` | `https://widgets…` | Protocol-relative resolves to HTTP on a non-SSL page; this form takes name, email, phone, DOB |
+| `locale="undefined"` | delete the attribute | A literal JavaScript `undefined` leaks into the markup |
+| `return-url` + `return-method="post"` | delete both | No backend on Fasthosts to receive a POST, and `.htaccess` 301-redirects `www.`→apex which discards the POST body. Without them DMN shows its own confirmation page and still emails the customer |
+| Placeholder colours (green/yellow) | brand palette | See below |
+
+**Colours** live on the `onsass.designmynight.com` stylesheet `<link>` in `<head>`, not on the script:
+`primary-color=%23c9a96e` (gold), `background-color=%230d0905`, `body-text-color=%23f5f2ed`.
+They **must stay `%23`-encoded** — a raw `#` starts the URL fragment and the colour is silently
+dropped, leaving a widget that looks almost right but in DMN's default accent. DMN's own docs show
+the unencoded form; don't copy it. The `&` separators are written `&amp;` for HTML validity.
+
+**Two CSS details in `style-bistro.css` that are load-bearing:**
+- `.booking-widget { color-scheme: dark }` — makes native selects and date pickers render in dark OS
+  chrome. Without it the dropdown options are near-white on near-white. DMN's FAQ lists this as a
+  common failure on dark sites.
+- The container border/padding is applied via `.booking-widget:has(:not(script))`, so it only draws
+  once DMN has rendered something. If the script is blocked by an ad-blocker or corporate proxy the
+  wrapper collapses instead of leaving a confusing empty box — `<noscript>` does not cover that case,
+  since JS is enabled and only the fetch failed.
+
+The script must stay **inside** `<div class="booking-widget">`: the V2 widget renders into its script
+tag's parent element and has no container-id option.
+
+`custom-source="Website"` tags bookings for Collins' Source Breakdown report — the Source must exist
+in Collins or bookings arrive unattributed.
 
 ---
 
@@ -503,7 +545,7 @@ Because the site is flat (all files in the root), every link and asset reference
 - [ ] Wire up Eventbrite event ID in `book_stage.html` (replace placeholder embed)
 - [ ] Update Facebook, TikTok and X social links when accounts are live
 - [ ] Real content from the client (copy, images, actual menu)
-- [ ] Contact & booking forms (currently email links only)
+- [ ] Contact forms (still email links only — bistro table booking now uses DesignMyNight)
 - [ ] Phone number, opening hours and `servesCuisine` — currently omitted from JSON-LD; add when confirmed
 - [ ] Uncomment the force-HTTPS rule in `.htaccess` once SSL is provisioned on the domain
 - [ ] Submit `sitemap.xml` to Google Search Console after first deploy
