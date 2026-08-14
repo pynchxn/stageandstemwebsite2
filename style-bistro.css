@@ -537,6 +537,21 @@ footer {
 .booking-widget {
   color-scheme: dark;
   max-width: 680px;
+  /* text-align inherits, so without this the .booking-section centring below
+     would leak into DMN's own form and re-align its labels and fields. This
+     change moves the box, not its contents. */
+  text-align: left;
+}
+
+/* The booking block reads as one centred composition on desktop and tablet —
+   eyebrow, heading, rule, intro, widget and fallback together. Undone at the
+   site's single 768px breakpoint below, where the widget fills the width and
+   centred body copy would read worse. */
+.booking-section { text-align: center; }
+.booking-section > p,
+.booking-section > .booking-widget {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Only draw the container once DMN has actually rendered into it. If the script
@@ -570,4 +585,10 @@ footer {
 
 @media (max-width: 768px) {
   .booking-widget:has(:not(script)) { padding: 1.5rem; }
+  .booking-section { text-align: left; }
+  .booking-section > p,
+  .booking-section > .booking-widget {
+    margin-left: 0;
+    margin-right: 0;
+  }
 }

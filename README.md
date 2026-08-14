@@ -330,12 +330,17 @@ page. Two rules about it:
 `booking-confirmed.html` is `noindex, nofollow` and deliberately **absent from `sitemap.xml`** — it's
 a transient state, not a destination.
 
-**Open caveat: does the host accept POST?** `booking-confirmed.html` is a static file, and some
-server configurations answer **405 Method Not Allowed** to a POST for static content — which the
-customer would hit right after booking. This cannot be tested on GitHub Pages, which rejects POST to
-static files regardless. Test it on the real host with `dmn-post-test.html` (one button, sends a
-dummy POST). If it 405s, switch to GET by deleting the `return-method` attribute, accepting that
-personal data then appears in the URL. Delete `dmn-post-test.html` once confirmed.
+**POST returns are confirmed working** end to end — the host serves `booking-confirmed.html` on a
+POST rather than answering 405, which was the one real risk with this approach.
+
+If that ever regresses (a host or config change), the symptom is customers hitting a
+**405 Method Not Allowed** immediately after booking. The fallback is to delete the `return-method`
+attribute, which drops DMN back to a GET return — reliable on any static host, at the cost of the
+customer's name, email, phone and DOB appearing in the URL and browser history.
+
+The booking block is centred as a single composition above 768px via `.booking-section` in
+`style-bistro.css`. Note the `text-align: left` reset on `.booking-widget` — `text-align` inherits,
+and without it the centring leaks into DMN's own form and re-aligns its fields.
 
 ---
 
