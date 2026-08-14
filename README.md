@@ -270,7 +270,7 @@ The raw Wizard output ships with four defects:
 |---|---|---|
 | `src="//widgets…"` | **leave exactly as-is** | See the warning below — do not "fix" this |
 | `locale="undefined"` | delete the attribute | A literal JavaScript `undefined` leaks into the markup |
-| `return-url` + `return-method="post"` | delete both | No backend on Fasthosts to receive a POST, and `.htaccess` 301-redirects `www.`→apex which discards the POST body. Without them DMN shows its own confirmation page and still emails the customer |
+| `return-url="https://www.stageandstem.com/"` | apex host + a real confirmation page | The Wizard emits the `www.` host, which `.htaccess` 301-redirects to apex — and a 301 **discards the POST body**, losing the return. It also pointed at `/`, the split-door landing page. See the return flow below |
 | Placeholder colours (green/yellow) | brand palette | See below |
 
 ### ⚠️ Do not rewrite the script `src` to `https://`
@@ -308,6 +308,34 @@ tag's parent element and has no container-id option.
 
 `custom-source="Website"` tags bookings for Collins' Source Breakdown report — the Source must exist
 in Collins or bookings arrive unattributed.
+
+### Post-booking return flow
+
+```
+return-url="https://stageandstem.com/booking-confirmed.html"
+return-method="post"
+```
+
+After booking, DMN sends the customer to **`booking-confirmed.html`** — a bistro-styled thank-you
+page. Two rules about it:
+
+- **Apex host, never `www.`** The Wizard regenerates this as `www.stageandstem.com`; `.htaccess`
+  301-redirects that to apex, and a 301 discards the POST body, so the return breaks.
+- **The page shows no booking details, deliberately.** DMN emails the customer a full summary
+  anyway, and a static host cannot read a POST body — so the page ignores the payload entirely and
+  says "check your inbox". This also keeps personal data out of the page and out of the URL, which
+  is why `return-method="post"` is used rather than the GET default (DMN deprecated GET returns for
+  GDPR reasons — they put name, email, phone and DOB in the query string).
+
+`booking-confirmed.html` is `noindex, nofollow` and deliberately **absent from `sitemap.xml`** — it's
+a transient state, not a destination.
+
+**Open caveat: does the host accept POST?** `booking-confirmed.html` is a static file, and some
+server configurations answer **405 Method Not Allowed** to a POST for static content — which the
+customer would hit right after booking. This cannot be tested on GitHub Pages, which rejects POST to
+static files regardless. Test it on the real host with `dmn-post-test.html` (one button, sends a
+dummy POST). If it 405s, switch to GET by deleting the `return-method` attribute, accepting that
+personal data then appears in the URL. Delete `dmn-post-test.html` once confirmed.
 
 ---
 

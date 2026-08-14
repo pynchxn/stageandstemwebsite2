@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>POST probe — booking-confirmed.html</title>
+  <style>
+    body { background:#111; color:#eee; font:14px/1.7 system-ui, sans-serif; margin:0; padding:1.25rem; }
+    h1 { font-size:1.05rem; margin:0 0 .5rem; }
+    p { color:#bbb; font-size:.85rem; max-width:38rem; }
+    .box { border:1px solid #444; padding:1rem; margin:1.25rem 0; background:#000; }
+    button { background:#c9a96e; color:#0d0905; border:0; font:600 .8rem/1 system-ui, sans-serif;
+             letter-spacing:.15em; text-transform:uppercase; padding:1rem 1.75rem; cursor:pointer; }
+    code { color:#fbbf24; font-size:.8rem; word-break:break-all; }
+    .y { color:#4ade80; } .n { color:#f87171; }
+  </style>
+</head>
+<body>
+
+  <h1>POST probe</h1>
+  <p>
+    DesignMyNight returns the customer to <code>booking-confirmed.html</code> using an HTTP
+    <strong>POST</strong>. That page is a static file, and some hosts answer
+    <strong>405 Method Not Allowed</strong> to a POST for static content — which the customer would
+    hit immediately after booking.
+  </p>
+  <p>
+    Tap the button. It sends a POST to <code>booking-confirmed.html</code> carrying dummy fields
+    shaped like DMN's return payload.
+  </p>
+
+  <div class="box">
+    <p style="margin-top:0"><strong>Reading the result</strong></p>
+    <p class="y">The Stage &amp; Stem "Thank you" page renders → POST works. Nothing to change.</p>
+    <p class="n">A 405, a host error page, or a blank page → POST is rejected. Tell me and I'll
+      switch the return to GET, or drop it back to DesignMyNight's own confirmation.</p>
+  </div>
+
+  <form method="post" action="booking-confirmed.html">
+    <input type="hidden" name="first_name" value="Probe" />
+    <input type="hidden" name="last_name" value="Test" />
+    <input type="hidden" name="email" value="probe@example.com" />
+    <input type="hidden" name="status" value="complete" />
+    <button type="submit">Send a test POST →</button>
+  </form>
+
+  <p style="margin-top:2rem;color:#888;font-size:.78rem;">
+    Must be run on the real host (stageandstem.com). GitHub Pages rejects POST to static files, so a
+    failure there proves nothing about Fasthosts. Delete this file once POST is confirmed.
+  </p>
+
+</body>
+</html>

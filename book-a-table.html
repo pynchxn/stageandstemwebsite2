@@ -141,8 +141,9 @@
              risk is closed by the force-HTTPS redirect in .htaccess,
              not here.
            · drop locale="undefined" (a literal JS undefined leaks out)
-           · drop return-url/return-method (no backend to receive a POST,
-             and www→apex 301 would discard the body)
+           · return-url must use the APEX host, not www. The Wizard
+             emits www.stageandstem.com, which .htaccess 301s to apex —
+             and a 301 discards the POST body, losing the return.
            · swap the Wizard's placeholder colours for the brand palette
              in the stylesheet <link> in <head>
     ──────────────────────────────────────────────────────────────── -->
@@ -155,7 +156,9 @@
               search-venues="false"
               monday-first="true"
               show-type-first="true"
-              custom-source="Website"></script>
+              custom-source="Website"
+              return-url="https://stageandstem.com/booking-confirmed.html"
+              return-method="post"></script>
     </div>
 
     <noscript>
