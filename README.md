@@ -268,10 +268,25 @@ The raw Wizard output ships with four defects:
 
 | Wizard output | Fix | Why |
 |---|---|---|
-| `src="//widgets…"` | `https://widgets…` | Protocol-relative resolves to HTTP on a non-SSL page; this form takes name, email, phone, DOB |
+| `src="//widgets…"` | **leave exactly as-is** | See the warning below — do not "fix" this |
 | `locale="undefined"` | delete the attribute | A literal JavaScript `undefined` leaks into the markup |
 | `return-url` + `return-method="post"` | delete both | No backend on Fasthosts to receive a POST, and `.htaccess` 301-redirects `www.`→apex which discards the POST body. Without them DMN shows its own confirmation page and still emails the customer |
 | Placeholder colours (green/yellow) | brand palette | See below |
+
+### ⚠️ Do not rewrite the script `src` to `https://`
+
+The `src` **must** stay protocol-relative (`//widgets.designmynight.com/…`). Rewriting it to an
+explicit `https://` makes DMN's loader **silently skip the tag** — the script still loads and defines
+its `DMN` global, but no widget ever renders and no error is logged. Their loader evidently matches
+its own tag against the literal `//widgets…` src string, so any other prefix fails `isValidTag()`.
+
+This was confirmed by bisect (see git history for `dmn-test-bisect.html`): six variants of the
+snippet, one delta each. Only the `https://` change failed — removing `locale`, removing the
+`return-*` attributes and adding `custom-source` all rendered fine.
+
+It looks like a protocol-downgrade risk on a non-SSL page, and it is — but the remedy is the
+force-HTTPS redirect in `.htaccess`, which makes `//` resolve to HTTPS everywhere anyway. Fixing it
+on the script tag just breaks the widget.
 
 **Colours** live on the `onsass.designmynight.com` stylesheet `<link>` in `<head>`, not on the script:
 `primary-color=%23c9a96e` (gold), `background-color=%230d0905`, `body-text-color=%23f5f2ed`.

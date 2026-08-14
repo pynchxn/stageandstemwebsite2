@@ -135,7 +135,11 @@
 
          Venue ID and options come from Collins → Widget Wizard. If you
          regenerate the code there, re-apply these fixes before pasting:
-           · src must be https://, not protocol-relative //
+           · LEAVE THE src PROTOCOL-RELATIVE (//). Rewriting it to
+             https:// makes DMN's loader skip the tag and nothing renders
+             at all — confirmed by bisect, see README. The mixed-content
+             risk is closed by the force-HTTPS redirect in .htaccess,
+             not here.
            · drop locale="undefined" (a literal JS undefined leaks out)
            · drop return-url/return-method (no backend to receive a POST,
              and www→apex 301 would discard the body)
@@ -143,7 +147,7 @@
              in the stylesheet <link> in <head>
     ──────────────────────────────────────────────────────────────── -->
     <div class="booking-widget">
-      <script src="https://widgets.designmynight.com/bookings-partner.min.js"
+      <script src="//widgets.designmynight.com/bookings-partner.min.js"
               dmn-booking-form="true"
               venue="6a590682cf09d068cf42ee25"
               hide-offers="true"
