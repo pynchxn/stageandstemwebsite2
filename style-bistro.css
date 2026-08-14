@@ -537,9 +537,22 @@ footer {
 .booking-widget {
   color-scheme: dark;
   max-width: 680px;
-  /* text-align inherits, so without this the .booking-section centring below
-     would leak into DMN's own form and re-align its labels and fields. This
-     change moves the box, not its contents. */
+  text-align: center;
+}
+
+/* Centre whatever DMN renders inside the frame, without depending on an id or
+   class of theirs — we have never been able to load the widget to confirm its
+   markup, so this must not hinge on a guess.
+
+   Both mechanisms are needed because the root's display type is unknown: a
+   block with a constrained width is centred by the auto margins, an
+   inline-block by text-align:center on the parent above. The text-align:left
+   here then restores normal alignment inside the form, so DMN's own fields
+   render exactly as they did before. :not(script) keeps the rule off the
+   loader tag still sitting in the wrapper. */
+.booking-widget > :not(script) {
+  margin-left: auto;
+  margin-right: auto;
   text-align: left;
 }
 
@@ -568,9 +581,6 @@ footer {
   border: 1px solid var(--accent-dim);
   background: rgba(255,255,255,0.02);
   padding: 2.2rem;
-}
-.booking-widget #dmn-partner-widget {
-  width: 100%;
 }
 .booking-alt {
   margin-top: 1.5rem;

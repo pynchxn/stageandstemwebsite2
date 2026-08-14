@@ -339,8 +339,15 @@ attribute, which drops DMN back to a GET return — reliable on any static host,
 customer's name, email, phone and DOB appearing in the URL and browser history.
 
 The booking block is centred as a single composition above 768px via `.booking-section` in
-`style-bistro.css`. Note the `text-align: left` reset on `.booking-widget` — `text-align` inherits,
-and without it the centring leaks into DMN's own form and re-aligns its fields.
+`style-bistro.css`, and the widget is centred within its frame by `.booking-widget > :not(script)`.
+
+That selector is **deliberately name-agnostic**. Nobody here has been able to load the widget to
+confirm its markup — DMN's hosts are unreachable from the dev environment — so the rule must not
+depend on an id or class of theirs. An earlier `#dmn-partner-widget` rule, taken from DMN's docs on
+faith, matched nothing at all and was removed. The centring uses both `margin-inline: auto` and
+`text-align: center` on the parent, because a block root is centred by the former and an
+`inline-block` root only by the latter, and we don't know which it is. The `text-align: left` on the
+child then restores normal alignment inside the form.
 
 ---
 
