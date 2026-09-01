@@ -15,7 +15,9 @@ It is a **flat static site**: plain HTML, CSS and a little JavaScript, with no b
 **Business name:** Stage & Stem  
 **Tagline:** Performance Space & Bistro  
 **Email:** info@stageandstem.com  
-**Instagram:** @stageandstem
+**Instagram:** @stageandstem — https://www.instagram.com/stageandstem/  
+**Facebook:** https://www.facebook.com/profile.php?id=61575745712179  
+**TikTok:** @stageandstemcardiff — https://www.tiktok.com/@stageandstemcardiff
 
 ### Logo files
 - `logo.png` — full logo, used in the nav bar on every content page
@@ -449,14 +451,13 @@ Include `<script src="newsletter.js"></script>` before `</body>` on every page t
     <li><a href="bistro.html">Bistro →</a></li>
   </ul>
   <ul class="social-links">
-    <li><a href="https://www.instagram.com/stageandstem/" aria-label="Instagram"><!-- svg --></a></li>
-    <li><a href="#" aria-label="Facebook"><!-- svg --></a></li>
-    <li><a href="#" aria-label="TikTok"><!-- svg --></a></li>
-    <li><a href="#" aria-label="X (Twitter)"><!-- svg --></a></li>
+    <li><a href="https://www.instagram.com/stageandstem/" aria-label="Instagram" target="_blank" rel="noopener"><!-- svg --></a></li>
+    <li><a href="https://www.facebook.com/profile.php?id=61575745712179" aria-label="Facebook" target="_blank" rel="noopener"><!-- svg --></a></li>
+    <li><a href="https://www.tiktok.com/@stageandstemcardiff" aria-label="TikTok" target="_blank" rel="noopener"><!-- svg --></a></li>
   </ul>
 </footer>
 ```
-Social links use inline SVG icons. Facebook, TikTok and X currently link to `#` — update when accounts are live.
+Social links use inline SVG icons. All three accounts are live and open in a new tab. The brand runs Instagram, Facebook and TikTok only — the X (Twitter) icon was removed. The block is copy-pasted, so a handle change means editing every page (plus the `sameAs` array in each page's JSON-LD).
 
 ### Gold rule divider
 ```html
@@ -587,7 +588,7 @@ Because the site is flat (all files in the root), every link and asset reference
 - [x] Newsletter signup strip on all content pages, wired to Mailchimp (`newsletter.js`)
 - [x] Events calendar on `whats-on.html` with category filter tabs and sold-out support
 - [x] Ticket booking page (`book_stage.html`) with Eventbrite embed placeholder
-- [x] Social links in footer of all pages (Instagram live, Facebook/TikTok/X placeholder)
+- [x] Social links in footer of all pages (Instagram, Facebook and TikTok all live)
 - [x] Mobile hamburger nav on all pages
 - [x] SEO foundation: per-page meta descriptions, canonical URLs, Open Graph & Twitter Cards
 - [x] JSON-LD structured data (`Organization` sitewide; `Restaurant` on bistro pages; `PerformingArtsTheater` on stage pages; `FAQPage` on both contact pages)
@@ -598,7 +599,6 @@ Because the site is flat (all files in the root), every link and asset reference
 ## What Still Needs Building / Improving
 
 - [ ] Wire up Eventbrite event ID in `book_stage.html` (replace placeholder embed)
-- [ ] Update Facebook, TikTok and X social links when accounts are live
 - [ ] Real content from the client (copy, images, actual menu)
 - [ ] Contact forms (still email links only — bistro table booking now uses DesignMyNight)
 - [ ] Phone number, opening hours and `servesCuisine` — currently omitted from JSON-LD; add when confirmed
