@@ -7,5 +7,5 @@ RewriteCond %{HTTP_HOST} ^www\.stageandstem\.com [NC]
 RewriteRule ^(.*)$ https://stageandstem.com/$1 [R=301,L]
 
 # Force HTTPS — uncomment the two lines below once SSL is provisioned on the domain.
-# RewriteCond %{HTTPS} off
-# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
