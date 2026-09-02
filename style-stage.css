@@ -237,6 +237,17 @@ nav {
   line-height: 1.9;
   color: var(--muted);
 }
+a.card { display: block; text-decoration: none; color: var(--white); }
+a.card .card-title { color: var(--white); }
+a.card .card-body  { color: var(--muted); }
+.card-cta {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
 
 /* ── EVENTS CALENDAR ── */
 .filter-tabs {
