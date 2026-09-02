@@ -39,7 +39,7 @@
     "url": "https://stageandstem.com/",
     "logo": "https://stageandstem.com/logo.png",
     "image": "https://stageandstem.com/og-image.png",
-    "description": "Performance space and bistro on Richmond Road, Cardiff.",
+    "description": "Stage & Stem is Cardiff's new independent performance and social venue, bringing together live entertainment, dance, music, cabaret, theatre, cocktails and great hospitality under one roof.",
     "sameAs": ["https://www.instagram.com/stageandstem/", "https://www.facebook.com/profile.php?id=61575745712179", "https://www.tiktok.com/@stageandstemcardiff"],
     "address": {
       "@type": "PostalAddress",
@@ -74,6 +74,12 @@
       "postalCode": "CF24 3BT",
       "addressCountry": "GB"
     },
+    "openingHoursSpecification": [
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Monday", "opens": "09:00", "closes": "18:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Tuesday", "Wednesday", "Thursday"], "opens": "09:00", "closes": "23:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday", "Saturday"], "opens": "09:00", "closes": "00:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday", "opens": "16:00", "closes": "23:00" }
+    ],
     "priceRange": "£",
     "currenciesAccepted": "GBP",
     "hasMenu": "https://stageandstem.com/menus.html",
@@ -91,7 +97,7 @@
         "name": "What are your opening hours?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Our hours change a little around live events and seasonal menus. The latest opening times are pinned to our Instagram (instagram.com/stageandstem), or email info@stageandstem.com and we'll confirm."
+          "text": "We're open Monday 9:00-18:00, Tuesday to Thursday 9:00-23:00, Friday and Saturday 9:00-midnight, and Sunday 16:00-23:00. Times can shift a little around live events and seasonal menus - any changes are pinned to our Instagram (instagram.com/stageandstem), or email info@stageandstem.com and we'll confirm."
         }
       },
       {
@@ -146,6 +152,7 @@
     <label class="nav-burger" for="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></label>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
       <li><a href="menus.html">Menu</a></li>
       <li><a href="book-a-table.html">Book a Table</a></li>
       <li><a href="contact_bistro.html" class="active">Contact</a></li>
@@ -170,6 +177,18 @@
         <div class="contact-detail">
           <p class="contact-detail-label">Address</p>
           <p class="contact-detail-value">199–201 Richmond Road<br>Cardiff, CF24 3BT</p>
+        </div>
+        <div class="contact-detail">
+          <p class="contact-detail-label">Opening Hours</p>
+          <ul class="hours-list">
+            <li><span>Monday</span><span>9:00 – 18:00</span></li>
+            <li><span>Tuesday</span><span>9:00 – 23:00</span></li>
+            <li><span>Wednesday</span><span>9:00 – 23:00</span></li>
+            <li><span>Thursday</span><span>9:00 – 23:00</span></li>
+            <li><span>Friday</span><span>9:00 – 00:00</span></li>
+            <li><span>Saturday</span><span>9:00 – 00:00</span></li>
+            <li><span>Sunday</span><span>16:00 – 23:00</span></li>
+          </ul>
         </div>
         <div class="contact-detail">
           <p class="contact-detail-label">Follow us</p>
@@ -201,7 +220,7 @@
 
         <div class="faq-entry">
           <p class="faq-entry-q">What are your opening hours?</p>
-          <p class="faq-entry-a">Our hours change a little around live events and seasonal menus. The latest opening times are pinned to our <a href="https://www.instagram.com/stageandstem/" target="_blank" rel="noopener" style="color:var(--accent);">Instagram</a>, or drop us a line at <a href="mailto:info@stageandstem.com" style="color:var(--accent);">info@stageandstem.com</a> and we'll confirm.</p>
+          <p class="faq-entry-a">We're open Monday 9:00–18:00, Tuesday to Thursday 9:00–23:00, Friday and Saturday 9:00–midnight, and Sunday 16:00–23:00. Times can shift a little around live events and seasonal menus — any changes are pinned to our <a href="https://www.instagram.com/stageandstem/" target="_blank" rel="noopener" style="color:var(--accent);">Instagram</a>, or drop us a line at <a href="mailto:info@stageandstem.com" style="color:var(--accent);">info@stageandstem.com</a> and we'll confirm.</p>
         </div>
 
         <div class="faq-entry">
@@ -250,6 +269,7 @@
   <footer>
     <p class="footer-copy">Stage &amp; Stem &nbsp;·&nbsp; Performance Space &amp; Bistro</p>
     <ul class="footer-links">
+      <li><a href="about.html">About</a></li>
       <li><a href="menus.html">Menu</a></li>
       <li><a href="book-a-table.html">Book a Table</a></li>
       <li><a href="contact_bistro.html">Contact</a></li>

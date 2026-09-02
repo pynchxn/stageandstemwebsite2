@@ -305,6 +305,21 @@ a.card .card-body  { color: var(--muted); }
   line-height: 1.9;
   color: var(--muted);
 }
+.hours-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.75rem;
+  line-height: 1.9;
+  color: var(--muted);
+  max-width: 15rem;
+}
+.hours-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+.hours-list li span:last-child { white-space: nowrap; }
 .contact-faqs {
   margin-top: 5rem;
   border-top: 1px solid var(--accent-dim);
@@ -601,4 +616,82 @@ footer {
     margin-left: 0;
     margin-right: 0;
   }
+}
+
+/* ── VISION ── */
+/* Used by about.html (the full statement) and by the teaser band on stage.html
+   and bistro.html. The two stylesheets are a fork, not a theme — this block must
+   stay byte-identical in both, so any edit here has to be made twice. */
+
+.vision-copy {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 2;
+  max-width: 560px;
+  margin-bottom: 1.8rem;
+}
+/* The client's own emphasis, from the supplied vision statement. Montserrat is
+   imported at 300/400/500/600 — there is no 700, so a default <strong> resolves
+   to 600 and reads muddy at 50% opacity. Lift the colour instead; 500 is
+   available if it ever needs more weight. */
+.vision-copy strong {
+  color: var(--white);
+  font-weight: 400;
+}
+
+/* about.html's statement reads as one centred composition — eyebrow, heading,
+   rules, the three paragraphs, sign-off and CTAs together. Same shape as
+   .booking-section: a modifier applied alongside .section, not a replacement.
+   .vision-copy keeps its 560px measure and is centred by auto margins. Stays
+   centred at every width, matching .hero and .newsletter-strip. */
+.vision-section { text-align: center; }
+.vision-section .vision-copy {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.vision-signoff {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+  line-height: 1.3;
+  color: var(--white);
+}
+
+/* Full-bleed teaser band. Deliberately not .newsletter-strip: it carries a gold
+   rule, sets its focal line larger, and ends in a text link rather than a form,
+   so the two bands don't read as twins on the same page. */
+.vision-strip {
+  border-top: 1px solid var(--accent-dim);
+  border-bottom: 1px solid var(--accent-dim);
+  padding: 5rem 4rem;
+  text-align: center;
+}
+.vision-strip .vision-signoff { margin-bottom: 2rem; }
+
+.vision-link {
+  display: inline-block;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.vision-link:hover { color: var(--white); }
+
+@media (max-width: 768px) {
+  .vision-strip { padding: 3.5rem 1.5rem; }
+}
+
+/* ── NAV DENSITY (six-item nav) ── */
+/* Between the burger breakpoint and ~960px a six-item nav no longer fits beside
+   the logo at the default 2.5rem gap — the <li>s shrink and "Perform With Us"
+   wraps to two lines. Bounded with min-width:769px so it can never leak into the
+   768px mobile block, which sets its own nav padding and a zero gap. */
+@media (min-width: 769px) and (max-width: 960px) {
+  nav { padding: 1.8rem 2rem; }
+  .nav-links { gap: 1.5rem; }
+  .nav-links a { letter-spacing: 0.2em; }
 }

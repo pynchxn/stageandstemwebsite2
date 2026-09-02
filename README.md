@@ -49,6 +49,7 @@ All files are in the repository root:
 ```
 /
 ├── index.html              ← Split landing / entry page (self-contained)
+├── about.html              ← Shared About / Our Vision page (stage-styled, linked from both sides)
 │
 ├── stage.html              ← Stage home
 ├── whats-on.html           ← Stage: events/programme with filter tabs
@@ -60,6 +61,7 @@ All files are in the repository root:
 ├── menus.html              ← Bistro: food & drink menu
 ├── book-a-table.html       ← Bistro: table reservations
 ├── contact_bistro.html     ← Bistro contact
+├── booking-confirmed.html  ← Post-booking thank-you page (noindex)
 │
 ├── 404.html                ← Custom 404 page (noindex)
 │
@@ -131,6 +133,8 @@ Cool, theatrical, dark. Background has a subtle deep indigo/purple tint. Hover s
 
 Includes event calendar classes: `.filter-tabs`, `.filter-tab`, `.events-list`, `.event-row`, `.event-row-date`, `.event-row-day`, `.event-row-month`, `.event-row-tag`, `.event-row-name`, `.event-row-detail`, `.event-row-action`, `.event-row-price`, `.sold-out`, `.sold-out-badge`, `.hire-banner`, `.btn--gold`.
 
+Also carries the shared vision classes: `.vision-strip`, `.vision-copy`, `.vision-signoff`, `.vision-link` — identical in both stylesheets (see The About Page below).
+
 ### Pages
 | File | Purpose |
 |---|---|
@@ -141,7 +145,7 @@ Includes event calendar classes: `.filter-tabs`, `.filter-tab`, `.events-list`, 
 | `book_stage.html` | Ticket booking via Eventbrite embed |
 
 ### Navigation (all stage pages)
-Home · What's On · Perform With Us · Contact · **Bistro** (gold crosslink) — with the full `logo.png` as the nav logo. The Bistro crosslink is styled as `.nav-crosslink-item` / `.nav-crosslink` and separated from the main links by a thin gold vertical border.
+Home · About · What's On · Perform With Us · Contact · **Bistro** (gold crosslink) — with the full `logo.png` as the nav logo. The Bistro crosslink is styled as `.nav-crosslink-item` / `.nav-crosslink` and separated from the main links by a thin gold vertical border.
 
 ### Cross-links within content
 - `stage.html` cabaret card → `book-a-table.html`; CTAs → `whats-on.html`
@@ -173,6 +177,8 @@ Warm, candlelit, intimate. Background has a subtle amber/burgundy tint. Hover st
 
 Adds menu and newsletter components: `.menu-section`, `.menu-item`, `.menu-item-name`, `.menu-item-price`, `.newsletter-strip`, `.newsletter-form`, `.newsletter-error`.
 
+Also carries the shared vision classes: `.vision-strip`, `.vision-copy`, `.vision-signoff`, `.vision-link` — identical in both stylesheets (see The About Page below).
+
 ### Pages
 | File | Purpose |
 |---|---|
@@ -182,13 +188,40 @@ Adds menu and newsletter components: `.menu-section`, `.menu-item`, `.menu-item-
 | `contact_bistro.html` | Contact for dining/private hire |
 
 ### Navigation (all bistro pages)
-Home · Menu · Book a Table · Contact · **Stage** (gold crosslink) — with the full `logo.png` as the nav logo.
+Home · About · Menu · Book a Table · Contact · **Stage** (gold crosslink) — with the full `logo.png` as the nav logo.
 
 ### Cross-links within content
 - `bistro.html` dine & show card → `whats-on.html`; CTA → `menus.html`
 - `book-a-table.html` inline note → `whats-on.html`
 - `contact_bistro.html` inline note → `contact_stage.html`
 - Footer on every bistro page links to `stage.html`
+
+---
+
+## The About Page (`about.html`)
+
+A single shared page carrying the client's official vision statement verbatim. It is **not** per-side: there is one statement, so there is one page.
+
+Because there is no neutral stylesheet, it adopts the **stage side** — it loads `style-stage.css` and uses the stage nav and footer link sets, with `class="active"` on About. The two stylesheets differ only in `--bg` (`#08080f` vs `#0d0905`), so the visual cost is imperceptible; the trade-off is that a bistro visitor who clicks About lands on a stage-nav page. Its CTA row therefore includes **Book a Table**, giving them an obvious route back into the bistro flow.
+
+Linked from the nav *and* footer of every page on both sides, plus `404.html`'s side links.
+
+### Vision strip
+A full-bleed teaser band sits between the hero and the first content section on `stage.html` and `bistro.html`:
+
+```html
+<div class="vision-strip">
+  <p class="section-eyebrow">Our Vision</p>
+  <div class="rule"><div class="rule-gem"></div></div>
+  <p class="vision-signoff">Come for the performance.<br />Stay for the atmosphere.</p>
+  <a class="vision-link" href="about.html">Read our vision &rarr;</a>
+</div>
+```
+
+`.vision-signoff` is shared with `about.html`. Do **not** rebuild this band on `.newsletter-strip` — nothing would break in testing (`newsletter.js` only walks up from a submitted form), but a later restyle of the newsletter would silently restyle two vision bands. The gold rule, the larger focal line and the text-link ending are what stop this band and the newsletter strip below it reading as twins on the same page.
+
+### Nav density
+The About link makes both navs six items. Below ~884px the stage nav no longer fits beside the logo, and because `.nav-links` children keep the default `flex-shrink: 1`, "Perform With Us" wraps to a second line rather than overflowing. A `@media (min-width: 769px) and (max-width: 960px)` block in both stylesheets tightens the gap, padding and tracking to cover that band. **The `min-width: 769px` lower bound is load-bearing** — without it the block would override the mobile nav rules. Stage is the binding side here, not bistro: "Perform With Us" is ~30% wider than "Book a Table".
 
 ---
 
@@ -539,9 +572,10 @@ The landing page also includes a `.visually-hidden` `<h1>` ("Stage & Stem — Pe
 
 ### Structured data (JSON-LD)
 Each page's `<head>` includes one or more `<script type="application/ld+json">` blocks:
-- **`Organization`** — on every content page. Carries name, URL, logo, image, `sameAs` (Instagram), Richmond Road `PostalAddress`, and a `contactPoint` with `info@stageandstem.com`.
+- **`Organization`** — on every content page. Carries name, URL, logo, image, `sameAs` (Instagram, Facebook, TikTok), Richmond Road `PostalAddress`, and a `contactPoint` with `info@stageandstem.com`. Its `description` is paragraph 1 of the client's vision statement, duplicated across 11 pages — note it contains the word "new", which will date.
 - **`Restaurant`** — on the four bistro pages (`bistro`, `menus`, `book-a-table`, `contact_bistro`). Includes `priceRange: "£"`, `currenciesAccepted: "GBP"`, `hasMenu: ".../menus.html"`, `acceptsReservations: true`.
 - **`PerformingArtsTheater`** — on the five stage pages (`stage`, `whats-on`, `perform-with-us`, `contact_stage`, `book_stage`).
+- **`AboutPage`** — on `about.html` only. Points `mainEntity` at the `#organization` node. `PerformingArtsTheater` / `Restaurant` are deliberately omitted there — both are already defined on nine other pages with their own canonical `url`, so a copy would add nothing and muddy which URL owns the entity.
 - **`FAQPage`** — on both contact pages (`contact_bistro`, `contact_stage`), mirroring the visible FAQ section on each page (opening hours / bookings / parking / accessibility, etc.).
 
 Restaurant and Theater both link back to the Organization via `parentOrganization: { "@id": "https://stageandstem.com/#organization" }`.
@@ -549,7 +583,7 @@ Restaurant and Theater both link back to the Organization via `parentOrganizatio
 **Currently omitted from the schema** (add as a follow-up when known): `telephone`, `openingHoursSpecification`, `servesCuisine`.
 
 ### `sitemap.xml` and `robots.txt`
-`sitemap.xml` lists the 10 indexable pages (`404.html` is excluded) with `<lastmod>`, `<changefreq>` and `<priority>`. `robots.txt` allows all crawlers and points to the sitemap.
+`sitemap.xml` lists the 11 indexable pages (`404.html` is excluded) with `<lastmod>`, `<changefreq>` and `<priority>`. `robots.txt` allows all crawlers and points to the sitemap.
 
 After deploying, submit `https://stageandstem.com/sitemap.xml` to Google Search Console.
 
@@ -589,6 +623,7 @@ Because the site is flat (all files in the root), every link and asset reference
 - [x] Events calendar on `whats-on.html` with category filter tabs and sold-out support
 - [x] Ticket booking page (`book_stage.html`) with Eventbrite embed placeholder
 - [x] Social links in footer of all pages (Instagram, Facebook and TikTok all live)
+- [x] Shared About page (`about.html`) carrying the client's official vision statement, teased by a vision strip on both home pages
 - [x] Mobile hamburger nav on all pages
 - [x] SEO foundation: per-page meta descriptions, canonical URLs, Open Graph & Twitter Cards
 - [x] JSON-LD structured data (`Organization` sitewide; `Restaurant` on bistro pages; `PerformingArtsTheater` on stage pages; `FAQPage` on both contact pages)
@@ -604,7 +639,6 @@ Because the site is flat (all files in the root), every link and asset reference
 - [ ] Phone number, opening hours and `servesCuisine` — currently omitted from JSON-LD; add when confirmed
 - [ ] Uncomment the force-HTTPS rule in `.htaccess` once SSL is provisioned on the domain
 - [ ] Submit `sitemap.xml` to Google Search Console after first deploy
-- [ ] About page for each side, or a shared About page
 - [ ] Google Sheets (or similar) integration for events, so the client can update What's On without touching code
 
 ---
