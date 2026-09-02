@@ -301,6 +301,12 @@ a.card .card-body  { color: var(--muted); }
   color: var(--muted);
   margin-top: 0.3rem;
 }
+.event-row-time {
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-top: 0.5rem;
+}
 .event-row-tag {
   font-size: 0.55rem;
   letter-spacing: 0.25em;
@@ -355,6 +361,15 @@ a.card .card-body  { color: var(--muted); }
   white-space: nowrap;
 }
 .btn--gold:hover { background: #b8924e; border-color: #b8924e; }
+
+/* Greyed-out, non-clickable button — e.g. Status = "Tickets Available Soon". */
+.btn--gold.btn--disabled,
+.btn--gold.btn--disabled:hover {
+  background: rgba(201,169,110,0.12);
+  border-color: rgba(201,169,110,0.2);
+  color: var(--muted);
+  cursor: default;
+}
 
 .event-row.sold-out { opacity: 0.45; cursor: default; }
 .event-row.sold-out:hover { background: transparent; }

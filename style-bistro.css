@@ -659,6 +659,21 @@ footer {
   color: var(--white);
 }
 
+/* The hand-drawn star from the printed vision statement, which sits just after
+   the sign-off's last line. Sized in em so it tracks the sign-off's clamped
+   font size, and nudged down onto the baseline the way the original sits. */
+.signoff-star {
+  display: inline-block;
+  height: 0.9em;
+  width: auto;
+  margin-left: 0.45em;
+  vertical-align: -0.06em;
+  opacity: 0.9;
+  /* A jaunty tilt against the upright serif. The supplied PNG is drawn square
+     on, so the angle lives here — adjust the one number to taste. */
+  transform: rotate(10deg);
+}
+
 /* Full-bleed teaser band. Deliberately not .newsletter-strip: it carries a gold
    rule, sets its focal line larger, and ends in a text link rather than a form,
    so the two bands don't read as twins on the same page. */

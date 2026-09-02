@@ -14,14 +14,14 @@
  *
  *  Sheet columns, in order (row 1 is the header, data starts on row 2):
  *    A Date        2026-04-12         required — YYYY-MM-DD (also accepts DD/MM/YYYY)
- *    B Ends        20:00              optional — hide time on the event day; blank = end of day
- *    C Category    Music              optional — drives the filter tabs
+ *    B Start time  20:00              optional — shown on the row; blank = no time shown
+ *    C Category    Music, Comedy      optional — drives the filter tabs; comma-separated for several
  *    D Tag         Jazz · Live Music  optional — small label above the name
  *    E Name        An Evening of Jazz required
  *    F Detail      Doors 6:30pm…      optional
  *    G Price       £45                optional — a bare number gets a £ prepended
  *    H Price note  per person         optional
- *    I Status      (blank)            optional — blank | Sold out | Cancelled | Postponed
+ *    I Status      (blank)            optional — blank | Sold out | Cancelled | Postponed | Tickets Available Soon
  *    J Ticket URL  https://…          optional — no URL means no Book Now button
  *
  *  See README.md → "Events Calendar" for the full setup (sheet, API key, columns).
@@ -53,15 +53,18 @@
 
   /* ─────────────────────────────────────────────────────────────────────────── */
 
-  var COLUMNS = ['date', 'ends', 'category', 'tag', 'name', 'detail', 'price', 'priceNote', 'status', 'ticketUrl'];
+  var COLUMNS = ['date', 'start', 'category', 'tag', 'name', 'detail', 'price', 'priceNote', 'status', 'ticketUrl'];
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   // Recognised Status values → CSS class + badge text + badge class.
+  // `asButton: true` renders the label as a greyed-out, non-clickable button
+  // instead of a small badge.
   var STATUS = {
     'sold out':  { key: 'sold-out',  label: 'Sold Out',  badge: 'sold-out-badge' },
     'cancelled': { key: 'cancelled', label: 'Cancelled', badge: 'event-status-badge' },
     'canceled':  { key: 'cancelled', label: 'Cancelled', badge: 'event-status-badge' },
-    'postponed': { key: 'postponed', label: 'Postponed', badge: 'event-status-badge' }
+    'postponed': { key: 'postponed', label: 'Postponed', badge: 'event-status-badge' },
+    'tickets available soon': { key: 'tickets-soon', label: 'Tickets Available Soon', badge: 'event-status-badge', asButton: true }
   };
 
   var MSG = {
@@ -108,10 +111,35 @@
     return pad(h) + ':' + pad(min);
   }
 
+  // "20:00" → "8:00pm", "19:30" → "7:30pm", "09:00" → "9:00am". Input is the
+  // normalised 24h string from parseTime(); anything else → ''.
+  function formatTime(t) {
+    if (!t) return '';
+    var m = /^(\d{2}):(\d{2})$/.exec(t);
+    if (!m) return '';
+    var h = +m[1], min = m[2];
+    var suffix = h < 12 ? 'am' : 'pm';
+    var h12 = h % 12 || 12;
+    return h12 + ':' + min + suffix;
+  }
+
   function formatPrice(p) {
     if (p == null || p === '') return '';
     var s = String(p).trim();
     return /^\d+(\.\d{1,2})?$/.test(s) ? '£' + s : s;
+  }
+
+  // "Music, Comedy" → ['Music', 'Comedy']. Comma-separated, trimmed, blanks
+  // dropped, de-duped case-insensitively (first spelling wins).
+  function parseCategories(raw) {
+    if (raw == null || raw === '') return [];
+    var seen = {}, out = [];
+    String(raw).split(',').forEach(function (part) {
+      var c = part.trim();
+      var k = c.toLowerCase();
+      if (c && !seen[k]) { seen[k] = true; out.push(c); }
+    });
+    return out;
   }
 
   // Current date + time in London, independent of the visitor's timezone.
@@ -127,14 +155,12 @@
     return { date: parts.year + '-' + parts.month + '-' + parts.day, time: hour + ':' + parts.minute };
   }
 
-  // Keep an event until the end of its day in London — or until its Ends time,
-  // if one is given — never based on the visitor's clock.
+  // Keep an event listed until the end of its day in London — never based on the
+  // visitor's clock. The Start time is display-only and does not hide the row.
   function isUpcoming(evt, now) {
     now = now || londonNow();
     if (!evt || !evt.date) return false;
-    if (now.date < evt.date.iso) return true;
-    if (now.date > evt.date.iso) return false;
-    return evt.endsTime ? now.time <= evt.endsTime : true;
+    return now.date <= evt.date.iso;
   }
 
   // One raw sheet row (array of cells) → an event object, or null to skip it.
@@ -150,8 +176,8 @@
 
     return {
       date: date,
-      endsTime: parseTime(raw.ends),
-      category: raw.category,
+      startTime: parseTime(raw.start),
+      categories: parseCategories(raw.category),
       tag: raw.tag,
       name: raw.name,
       detail: raw.detail,
@@ -162,11 +188,15 @@
     };
   }
 
+  // Every category present across all events, first-seen order, de-duped
+  // case-insensitively. An event can list several (see parseCategories).
   function categoriesOf(events) {
     var seen = {}, out = [];
     events.forEach(function (e) {
-      var c = e.category, k = c && c.toLowerCase();
-      if (c && !seen[k]) { seen[k] = true; out.push(c); }
+      (e.categories || []).forEach(function (c) {
+        var k = c.toLowerCase();
+        if (!seen[k]) { seen[k] = true; out.push(c); }
+      });
     });
     return out;
   }
@@ -192,7 +222,17 @@
   function buildAction(evt) {
     if (evt.status) {
       var s = el('div', 'event-row-action');
-      s.appendChild(el('div', evt.status.badge, evt.status.label));
+      if (evt.status.asButton) {
+        if (evt.price) {
+          var p = el('div', 'event-row-price');
+          p.appendChild(document.createTextNode(evt.price + (evt.priceNote ? ' ' : '')));
+          if (evt.priceNote) p.appendChild(el('span', null, evt.priceNote));
+          s.appendChild(p);
+        }
+        s.appendChild(el('span', 'btn btn--gold btn--disabled', evt.status.label));
+      } else {
+        s.appendChild(el('div', evt.status.badge, evt.status.label));
+      }
       return s;
     }
     var hasPrice = !!evt.price, hasBtn = !!evt.ticketUrl;
@@ -216,7 +256,7 @@
 
   function eventRow(evt) {
     var row = el('div', 'event-row');
-    if (evt.category) row.setAttribute('data-category', evt.category);
+    if (evt.categories.length) row.setAttribute('data-category', evt.categories.join(', '));
 
     var clickable = !evt.status && !!evt.ticketUrl;
     if (evt.status) row.classList.add(evt.status.key);
@@ -225,6 +265,8 @@
     var date = el('div', 'event-row-date');
     date.appendChild(el('div', 'event-row-day', pad(evt.date.d)));
     date.appendChild(el('div', 'event-row-month', MONTHS[evt.date.mo - 1] + ' ' + evt.date.y));
+    var startLabel = formatTime(evt.startTime);
+    if (startLabel) date.appendChild(el('div', 'event-row-time', startLabel));
     row.appendChild(date);
 
     var mid = el('div');
@@ -249,7 +291,8 @@
 
   function applyFilter(filter) {
     document.querySelectorAll('.events-list .event-row').forEach(function (row) {
-      var show = filter === 'All Events' || row.getAttribute('data-category') === filter;
+      var cats = (row.getAttribute('data-category') || '').split(',').map(function (s) { return s.trim(); });
+      var show = filter === 'All Events' || cats.indexOf(filter) !== -1;
       row.style.display = show ? '' : 'none';
     });
   }
@@ -332,7 +375,8 @@
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
       CONFIG: CONFIG, STATUS: STATUS,
-      parseEventDate: parseEventDate, parseTime: parseTime, formatPrice: formatPrice,
+      parseEventDate: parseEventDate, parseTime: parseTime, formatTime: formatTime,
+      formatPrice: formatPrice, parseCategories: parseCategories,
       londonNow: londonNow, isUpcoming: isUpcoming, normaliseRow: normaliseRow,
       categoriesOf: categoriesOf, byDateThenName: byDateThenName,
       render: render, eventRow: eventRow, MSG: MSG

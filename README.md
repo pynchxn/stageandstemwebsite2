@@ -260,8 +260,8 @@ is rendered on page load.
 
 - **Past events drop off by themselves.** An event stays listed until the **end of its
   day**, measured in **London time** (`Europe/London`) — not the visitor's timezone, so
-  someone browsing from Spain sees the same listing as someone in Cardiff. An optional
-  `Ends` time hides it earlier on the day itself.
+  someone browsing from Spain sees the same listing as someone in Cardiff. The `Start time`
+  is shown on the row but never hides it — a gig stays listed all evening.
 - **The filter tabs rebuild** from the categories actually present, so a tab can never
   filter to an empty list.
 - Events are sorted by date, then name.
@@ -274,8 +274,8 @@ blank and the row still renders.
 | Column | Example | Notes |
 |---|---|---|
 | **Date** | `2026-04-12` | **Required.** `YYYY-MM-DD` (also accepts `DD/MM/YYYY`). |
-| **Ends** | `20:00` | Optional. Hide time on the event day. Blank = show all day. `8pm` also works. |
-| **Category** | `Music` | Optional. Drives the filter tabs. Use consistent spelling. |
+| **Start time** | `20:00` | Optional. Shown on the row (as `8:00pm`). `8pm` / `8:30pm` also work. Blank = no time shown. Does **not** affect when the event drops off. |
+| **Category** | `Music` or `Music, Comedy` | Optional. Drives the filter tabs. Use consistent spelling. **Comma-separate** for several — the event then shows under each of those tabs. |
 | **Tag** | `Jazz · Live Music` | Optional. Small label above the name. |
 | **Name** | `An Evening of Jazz` | **Required.** |
 | **Detail** | `Doors 6:30pm · Show 8pm` | Optional. One line of description. |
@@ -297,6 +297,7 @@ Use a dropdown (Data → Data validation) with these exact values:
 | `Sold out` | Dimmed, `Sold Out` badge, no button |
 | `Cancelled` | Name struck through, `Cancelled` badge, no button |
 | `Postponed` | `Postponed` badge, no button |
+| `Tickets Available Soon` | Price still shown, plus a greyed-out **Tickets Available Soon** button — not clickable. Use it to list a night before its ticket link exists, then clear the cell and paste the link into `Ticket URL`. |
 
 > **"Sold out" is one cell in the sheet, not automatic.** Genuinely automatic sold-out
 > would have to come from DesignMyNight, which has no usable public events API (see

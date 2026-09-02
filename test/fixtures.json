@@ -1,5 +1,5 @@
 {
-  "_comment": "Shape mirrors the Google Sheets API values.get response. The API omits trailing empty cells, so some rows here are deliberately short. Column order: Date, Ends, Category, Tag, Name, Detail, Price, Price note, Status, Ticket URL.",
+  "_comment": "Shape mirrors the Google Sheets API values.get response. The API omits trailing empty cells, so some rows here are deliberately short. Column order: Date, Start time, Category, Tag, Name, Detail, Price, Price note, Status, Ticket URL.",
   "range": "Events!A2:J1000",
   "majorDimension": "ROWS",
   "values": [
@@ -11,7 +11,7 @@
     ["2026-05-17", "", "Music", "Jazz · Live Music", "Late Night Jazz", "An intimate late session · Bar only · Doors 9pm", "", "", "Sold out", "https://tickets.designmynight.com/late-night-jazz"],
     ["2026-05-24", "", "Theatre", "Theatre", "Rained-Off Revue", "", "£22", "", "Cancelled", "https://tickets.designmynight.com/rained-off-revue"],
     ["2026-05-31", "", "Music", "Folk", "Postponed Folk Night", "New date to be confirmed", "£18", "per person", "Postponed", ""],
-    ["2026-06-07", "23:00", "Music", "Club", "Midnight Session", "Late one · Doors 10pm", "£12", "", "", "https://tickets.designmynight.com/midnight-session"],
+    ["2026-06-07", "22:00", "Music", "Club", "Midnight Session", "Late one · Doors 10pm", "£12", "", "", "https://tickets.designmynight.com/midnight-session"],
     ["not-a-date", "", "Music", "Broken", "Row With A Bad Date", "should be skipped, not crash"],
     ["2026-07-01", "", "", "", "", "row with only a date, no name — skipped"],
     ["2026-08-15", "", "Cabaret", "Cabaret · Late", "Summer Cabaret", "Doors 7pm", "£28", "per person", "", "https://tickets.designmynight.com/summer-cabaret"]

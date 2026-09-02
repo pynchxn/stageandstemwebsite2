@@ -124,6 +124,27 @@ for (const [status, cls, badge] of [
   });
 }
 
+test('Status "Tickets Available Soon": greyed-out button, keeps the price, no click', async () => {
+  const { list, opened } = setup([
+    [iso(8), '20:00', 'Music', 'Tag', 'Big Show', 'detail', '£25', 'per person', 'Tickets Available Soon', 'https://tickets.example.com/x']
+  ]);
+  await E.render();
+
+  const row = list.querySelector('.event-row');
+  assert.ok(row.classList.contains('tickets-soon'));
+  assert.ok(row.classList.contains('event-row--static'));
+
+  const btn = row.querySelector('.btn');
+  assert.ok(btn.classList.contains('btn--disabled'), 'greyed-out button');
+  assert.equal(btn.tagName, 'SPAN', 'not a link — nothing to click through to');
+  assert.equal(btn.textContent, 'Tickets Available Soon');
+  assert.equal(row.querySelector('.event-row-price').textContent, '£25 per person', 'price still shown');
+  assert.equal(row.querySelector('.event-row-time').textContent, '8:00pm', 'start time shown');
+
+  row.click();
+  assert.deepEqual(opened, [], 'not bookable yet — click goes nowhere');
+});
+
 test('an external Ticket URL opens in a new tab; the row click mirrors it', async () => {
   const { list, opened } = setup([
     [iso(9), '', 'Music', '', 'Late Night Jazz', '', '£12', '', '', 'https://tickets.designmynight.com/late']
@@ -175,6 +196,28 @@ test('filter tabs are rebuilt from the categories present; absent categories get
   // Back to "All Events" → all visible.
   tabs.querySelectorAll('.filter-tab').find((t) => t.textContent === 'All Events').click();
   assert.deepEqual(list.querySelectorAll('.event-row').map((r) => r.style.display), ['', '', '']);
+});
+
+test('a multi-category event shows under each of its category filters', async () => {
+  const { list, tabs } = setup([
+    [iso(3), '', 'Music, Comedy', '', 'Musical Comedy', '', '', '', '', ''],
+    [iso(4), '', 'Comedy', '', 'Pure Standup', '', '', '', '', ''],
+    [iso(5), '', 'Music', '', 'Pure Music', '', '', '', '', '']
+  ]);
+  await E.render();
+
+  assert.deepEqual(tabs.querySelectorAll('.filter-tab').map((t) => t.textContent), ['All Events', 'Music', 'Comedy']);
+  assert.equal(list.querySelector('.event-row').getAttribute('data-category'), 'Music, Comedy');
+
+  const vis = (label) => {
+    tabs.querySelectorAll('.filter-tab').find((t) => t.textContent === label).click();
+    return list.querySelectorAll('.event-row')
+      .filter((r) => r.style.display !== 'none')
+      .map((r) => r.querySelector('.event-row-name').textContent);
+  };
+
+  assert.deepEqual(vis('Music'), ['Musical Comedy', 'Pure Music']);
+  assert.deepEqual(vis('Comedy'), ['Musical Comedy', 'Pure Standup']);
 });
 
 test('bad-date and nameless rows are dropped without breaking the render', async () => {

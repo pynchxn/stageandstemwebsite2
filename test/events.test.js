@@ -70,7 +70,7 @@ test('normaliseRow: Date and Name are the only required cells', () => {
   assert.equal(row.priceNote, '');
   assert.equal(row.ticketUrl, '');
   assert.equal(row.status, null);
-  assert.equal(row.endsTime, null);
+  assert.equal(row.startTime, null);
 });
 
 test('normaliseRow: short arrays (API omits trailing empty cells) do not throw', () => {
@@ -79,7 +79,7 @@ test('normaliseRow: short arrays (API omits trailing empty cells) do not throw',
   assert.doesNotThrow(() => E.normaliseRow([]));
 });
 
-test('Status column maps to the four documented states', () => {
+test('Status column maps to the documented states', () => {
   const mk = (s) => E.normaliseRow(['2026-05-01', '', 'Music', '', 'X', '', '', '', s, 'https://t']);
   assert.equal(mk('').status, null);
   assert.equal(mk('Sold out').status.key, 'sold-out');
@@ -89,6 +89,8 @@ test('Status column maps to the four documented states', () => {
   assert.equal(mk('Postponed').status.key, 'postponed');
   assert.equal(mk('  Postponed  ').status.key, 'postponed', 'whitespace tolerant');
   assert.equal(mk('Sold Out').status.label, 'Sold Out');
+  assert.equal(mk('Tickets Available Soon').status.key, 'tickets-soon');
+  assert.equal(mk('tickets available soon').status.asButton, true, 'renders as a greyed-out button');
 });
 
 test('isUpcoming: keeps an event until the end of its London day', () => {
@@ -100,12 +102,21 @@ test('isUpcoming: keeps an event until the end of its London day', () => {
   assert.equal(E.isUpcoming(evt, { date: '2026-06-16', time: '00:01' }), false, 'the next day — gone');
 });
 
-test('isUpcoming: an Ends time cuts the event off earlier on its own day', () => {
-  const evt = E.normaliseRow(['2026-06-15', '23:00', 'Music', '', 'Midnight Session']);
-  assert.equal(evt.endsTime, '23:00');
-  assert.equal(E.isUpcoming(evt, { date: '2026-06-15', time: '22:30' }), true, 'before Ends');
-  assert.equal(E.isUpcoming(evt, { date: '2026-06-15', time: '23:30' }), false, 'after Ends');
-  assert.equal(E.isUpcoming(evt, { date: '2026-06-14', time: '23:30' }), true, 'day before, Ends irrelevant');
+test('Start time is display-only and never hides the row', () => {
+  const evt = E.normaliseRow(['2026-06-15', '20:00', 'Music', '', 'An Evening']);
+  assert.equal(evt.startTime, '20:00', 'parsed to 24h');
+  assert.equal(E.isUpcoming(evt, { date: '2026-06-15', time: '21:30' }), true, 'still listed after it starts');
+  assert.equal(E.isUpcoming(evt, { date: '2026-06-15', time: '23:59' }), true, 'listed to the end of the day');
+  assert.equal(E.isUpcoming(evt, { date: '2026-06-16', time: '00:01' }), false, 'gone the next day');
+});
+
+test('formatTime renders a 12-hour label', () => {
+  assert.equal(E.formatTime('20:00'), '8:00pm');
+  assert.equal(E.formatTime('19:30'), '7:30pm');
+  assert.equal(E.formatTime('09:00'), '9:00am');
+  assert.equal(E.formatTime('00:15'), '12:15am');
+  assert.equal(E.formatTime('12:00'), '12:00pm');
+  assert.equal(E.formatTime(null), '');
 });
 
 test('londonNow is computed in Europe/London regardless of the visitor timezone', () => {
@@ -185,6 +196,24 @@ test('categoriesOf: an event with a blank Category adds no tab', () => {
     E.normaliseRow(['2026-09-02', '', 'Music', '', 'Music Night'])
   ];
   assert.deepEqual(E.categoriesOf(events), ['Music']);
+});
+
+test('parseCategories splits on commas, trims, drops blanks, de-dupes', () => {
+  assert.deepEqual(E.parseCategories('Music'), ['Music']);
+  assert.deepEqual(E.parseCategories('Music, Comedy'), ['Music', 'Comedy']);
+  assert.deepEqual(E.parseCategories(' Music ,Comedy,  '), ['Music', 'Comedy']);
+  assert.deepEqual(E.parseCategories('Music, music'), ['Music'], 'first spelling wins');
+  assert.deepEqual(E.parseCategories(''), []);
+  assert.deepEqual(E.parseCategories(null), []);
+});
+
+test('an event can carry several categories; each contributes one tab', () => {
+  const events = [
+    E.normaliseRow(['2026-09-01', '', 'Music, Comedy', '', 'Musical Comedy Night']),
+    E.normaliseRow(['2026-09-02', '', 'Comedy', '', 'Stand-up'])
+  ];
+  assert.deepEqual(events[0].categories, ['Music', 'Comedy']);
+  assert.deepEqual(E.categoriesOf(events), ['Music', 'Comedy'], 'Comedy not duplicated');
 });
 
 test('missing Ticket URL leaves nothing to click', () => {
