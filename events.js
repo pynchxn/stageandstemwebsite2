@@ -35,14 +35,14 @@
   var CONFIG = {
     // The long id in the middle of the sheet URL:
     //   https://docs.google.com/spreadsheets/d/THIS_PART/edit
-    sheetId: 'REPLACE_WITH_SHEET_ID',
+    sheetId: '1jqnEarbjwdB33Mr_IKcqHuZVvjZDggI9XurrWmwf6M8',
 
     // A Google Sheets API key that is restricted to:
     //   (a) the "Google Sheets API" only, and
     //   (b) the HTTP referrer  https://stageandstem.com/*
     // Without the referrer restriction the key can be lifted from this file and
     // spent against the quota. See README.md.
-    apiKey: 'REPLACE_WITH_REFERRER_RESTRICTED_API_KEY',
+    apiKey: 'AIzaSyCdYY5gT4r3F8xdszEm3dLEN7u2sqMnQRA',
 
     // Tab name + cell range. Keep the tab named "Events", or change it here.
     range: 'Events!A2:J',
