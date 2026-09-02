@@ -69,6 +69,9 @@ All files are in the repository root:
 ├── style-bistro.css        ← Bistro styles (warm, amber-tinted)
 │
 ├── newsletter.js           ← Mailchimp newsletter signup handler
+├── events.js               ← Builds the What's On listing from a Google Sheet
+│
+├── test/                   ← No-dependency Node tests + preview harness for events.js (not deployed)
 │
 ├── logo.png                ← Full logo (nav)
 ├── logo_left.png           ← Left half (landing page)
@@ -131,7 +134,7 @@ Cool, theatrical, dark. Background has a subtle deep indigo/purple tint. Hover s
 --font-sans: 'Montserrat', sans-serif
 ```
 
-Includes event calendar classes: `.filter-tabs`, `.filter-tab`, `.events-list`, `.event-row`, `.event-row-date`, `.event-row-day`, `.event-row-month`, `.event-row-tag`, `.event-row-name`, `.event-row-detail`, `.event-row-action`, `.event-row-price`, `.sold-out`, `.sold-out-badge`, `.hire-banner`, `.btn--gold`.
+Includes event calendar classes: `.filter-tabs`, `.filter-tab`, `.events-list`, `.event-row`, `.event-row-date`, `.event-row-day`, `.event-row-month`, `.event-row-tag`, `.event-row-name`, `.event-row-detail`, `.event-row-action`, `.event-row-price`, `.sold-out`, `.sold-out-badge`, `.event-row--static`, `.event-status-badge` (Cancelled/Postponed), `.events-message` (loading/empty/error line), `.hire-banner`, `.btn--gold`.
 
 Also carries the shared vision classes: `.vision-strip`, `.vision-copy`, `.vision-signoff`, `.vision-link` — identical in both stylesheets (see The About Page below).
 
@@ -139,7 +142,7 @@ Also carries the shared vision classes: `.vision-strip`, `.vision-copy`, `.visio
 | File | Purpose |
 |---|---|
 | `stage.html` | Stage home — hero + upcoming events cards |
-| `whats-on.html` | Programme/events listing with category filter tabs |
+| `whats-on.html` | Programme/events listing — built from a Google Sheet by `events.js` |
 | `perform-with-us.html` | Info for performers + hire enquiries |
 | `contact_stage.html` | Contact for performance/hire |
 | `book_stage.html` | Ticket booking via Eventbrite embed |
@@ -149,7 +152,7 @@ Home · About · What's On · Perform With Us · Contact · **Bistro** (gold cro
 
 ### Cross-links within content
 - `stage.html` cabaret card → `book-a-table.html`; CTAs → `whats-on.html`
-- `whats-on.html` event rows & Book Now buttons → `book_stage.html`
+- `whats-on.html` event rows & Book Now buttons → each event's `Ticket URL` from the sheet (usually a DesignMyNight ticket page); external links open in a new tab
 - `whats-on.html` private hire banner → `contact_stage.html`
 - `perform-with-us.html` CTA → `contact_stage.html`
 - `contact_stage.html` inline note → `book-a-table.html`
@@ -248,44 +251,99 @@ Requirements for the markup it expects:
 
 ## Events Calendar (`whats-on.html`)
 
-The What's On page uses a filterable event list. Each event row links to `book_stage.html`.
+The What's On listing is **built from a Google Sheet** by `events.js` — staff add and
+remove gigs by editing the sheet, never the code. `whats-on.html` ships an empty
+`.filter-tabs` and `.events-list` container plus a `<noscript>` fallback; everything else
+is rendered on page load.
 
-### Filter tabs
-```html
-<div class="filter-tabs">
-  <div class="filter-tab active" data-filter="All Events">All Events</div>
-  <div class="filter-tab" data-filter="Music">Music</div>
-  <!-- Comedy, Theatre, Special -->
-</div>
-```
-An inline `<script>` at the bottom of `whats-on.html` handles tab clicks and shows/hides rows by matching `data-filter` against `data-category` on each `.event-row`.
+### What it does automatically
 
-### Event row
-```html
-<div class="event-row" data-category="Music" onclick="location.href='book_stage.html'">
-  <div class="event-row-date">
-    <div class="event-row-day">12</div>
-    <div class="event-row-month">Apr 2026</div>
-  </div>
-  <div>
-    <div class="event-row-tag">Jazz · Live Music</div>
-    <div class="event-row-name">An Evening of Jazz</div>
-    <div class="event-row-detail">Details · Doors 6:30pm · Show 8pm</div>
-  </div>
-  <div class="event-row-action">
-    <div class="event-row-price">£45 <span>per person</span></div>
-    <a href="book_stage.html" class="btn btn--gold">Book Now</a>
-  </div>
-</div>
-```
+- **Past events drop off by themselves.** An event stays listed until the **end of its
+  day**, measured in **London time** (`Europe/London`) — not the visitor's timezone, so
+  someone browsing from Spain sees the same listing as someone in Cardiff. An optional
+  `Ends` time hides it earlier on the day itself.
+- **The filter tabs rebuild** from the categories actually present, so a tab can never
+  filter to an empty list.
+- Events are sorted by date, then name.
 
-### Sold out event
-Add `class="event-row sold-out"`, remove the `onclick`, and replace the action div with:
-```html
-<div class="event-row-action">
-  <div class="sold-out-badge">Sold Out</div>
-</div>
-```
+### The sheet
+
+One row per event. **Only `Date` and `Name` are required** — every other cell may be left
+blank and the row still renders.
+
+| Column | Example | Notes |
+|---|---|---|
+| **Date** | `2026-04-12` | **Required.** `YYYY-MM-DD` (also accepts `DD/MM/YYYY`). |
+| **Ends** | `20:00` | Optional. Hide time on the event day. Blank = show all day. `8pm` also works. |
+| **Category** | `Music` | Optional. Drives the filter tabs. Use consistent spelling. |
+| **Tag** | `Jazz · Live Music` | Optional. Small label above the name. |
+| **Name** | `An Evening of Jazz` | **Required.** |
+| **Detail** | `Doors 6:30pm · Show 8pm` | Optional. One line of description. |
+| **Price** | `£45` | Optional. A bare number (`45`) gets a `£` added automatically. |
+| **Price note** | `per person` | Optional. Small text after the price. |
+| **Status** | *(blank)* | Optional dropdown — see below. |
+| **Ticket URL** | `https://tickets.designmynight.com/…` | Optional. The event's DesignMyNight ticket page. No URL = no "Book Now" button and the row isn't clickable. |
+
+Keep the tab (sheet) named **`Events`** and the header row on **row 1** (data starts row 2).
+To rename the tab, change `range` in `events.js`.
+
+### Status column
+
+Use a dropdown (Data → Data validation) with these exact values:
+
+| Status | Renders as |
+|---|---|
+| *(blank)* | Normal row — price + **Book Now** |
+| `Sold out` | Dimmed, `Sold Out` badge, no button |
+| `Cancelled` | Name struck through, `Cancelled` badge, no button |
+| `Postponed` | `Postponed` badge, no button |
+
+> **"Sold out" is one cell in the sheet, not automatic.** Genuinely automatic sold-out
+> would have to come from DesignMyNight, which has no usable public events API (see
+> "Ticket Booking" below). Flipping one dropdown cell is the win here — no code edit, no
+> deploy.
+
+### Setup (one-time)
+
+1. **Create the sheet** with the header row above. Share it: **Anyone with the link → Viewer**
+   (the API needs it readable), or use *File → Share → Publish to web*.
+2. **Get the sheet ID** — the long string in the URL:
+   `https://docs.google.com/spreadsheets/d/`**`THIS_PART`**`/edit`
+3. **Create an API key** — [Google Cloud Console](https://console.cloud.google.com/) → new
+   project → *APIs & Services* → enable **Google Sheets API** → *Credentials* → *Create
+   credentials → API key*. Then **restrict it** (this matters):
+   - *API restrictions* → **Google Sheets API** only.
+   - *Application restrictions* → **HTTP referrers** → add `https://stageandstem.com/*` and
+     `https://www.stageandstem.com/*`.
+4. Put both values in the `CONFIG` block at the top of **`events.js`**.
+
+> **The API key is in `events.js`, which is public.** That's an accepted trade-off: it's
+> read-only, limited to the Sheets API, tied to the `stageandstem.com` referrer, and points
+> at a sheet that's already published. It **must** stay referrer-restricted — otherwise it
+> can be copied from the file and spent against the quota.
+
+### A gig in three steps
+
+1. Add a row to the sheet: `Date`, `Name`, and whatever else you have.
+2. Paste the DesignMyNight ticket link into `Ticket URL`.
+3. That's it — the page picks it up on next load. Sold out later? Set `Status` to `Sold out`.
+
+### The SEO trade-off (known, accepted)
+
+Because events are fetched by JavaScript, they're **not in the page source**, so Google
+won't index individual gigs and there are no `Event` rich results. The rest of the site
+leans hard the other way (JSON-LD, canonicals, sitemap), so this cuts against the grain.
+The upgrade path — if it ever matters — is a scheduled GitHub Action that rewrites
+`whats-on.html` with real markup + `Event` JSON-LD and deploys it to Fasthosts. That's a
+change to how the site is built, so it hasn't been done.
+
+### Testing
+
+`test/` holds no-dependency Node tests (`node --test test/events.test.js test/render.test.js`)
+covering the date cutoff, timezone independence, blank cells, Status handling and the
+empty/error states against fixture JSON. `test/preview.html` renders the listing from a
+local fixture (no sheet, no network) for eyeballing layout — open it via a local static
+server. None of `test/` is uploaded to Fasthosts.
 
 ---
 
@@ -620,7 +678,7 @@ Because the site is flat (all files in the root), every link and asset reference
 - [x] Contextual cross-links (e.g. Dine & Show → What's On)
 - [x] Placeholder menu with example dishes and prices
 - [x] Newsletter signup strip on all content pages, wired to Mailchimp (`newsletter.js`)
-- [x] Events calendar on `whats-on.html` with category filter tabs and sold-out support
+- [x] Events listing on `whats-on.html` driven by a Google Sheet (`events.js`) — past events drop off automatically on London time, filter tabs rebuild from categories present, Status column for Sold out / Cancelled / Postponed
 - [x] Ticket booking page (`book_stage.html`) with Eventbrite embed placeholder
 - [x] Social links in footer of all pages (Instagram, Facebook and TikTok all live)
 - [x] Shared About page (`about.html`) carrying the client's official vision statement, teased by a vision strip on both home pages
@@ -639,7 +697,8 @@ Because the site is flat (all files in the root), every link and asset reference
 - [ ] Phone number, opening hours and `servesCuisine` — currently omitted from JSON-LD; add when confirmed
 - [ ] Uncomment the force-HTTPS rule in `.htaccess` once SSL is provisioned on the domain
 - [ ] Submit `sitemap.xml` to Google Search Console after first deploy
-- [ ] Google Sheets (or similar) integration for events, so the client can update What's On without touching code
+- [ ] Fill in the `sheetId` and `apiKey` in `events.js` and populate the Google Sheet (see "Events Calendar") — the integration is built; it needs the sheet + a referrer-restricted API key
+- [ ] Optional: scheduled GitHub Action to pre-render `whats-on.html` with `Event` JSON-LD, if event SEO becomes a priority (see "Events Calendar → SEO trade-off")
 
 ---
 

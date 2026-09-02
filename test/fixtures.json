@@ -1,0 +1,19 @@
+{
+  "_comment": "Shape mirrors the Google Sheets API values.get response. The API omits trailing empty cells, so some rows here are deliberately short. Column order: Date, Ends, Category, Tag, Name, Detail, Price, Price note, Status, Ticket URL.",
+  "range": "Events!A2:J1000",
+  "majorDimension": "ROWS",
+  "values": [
+    ["2026-04-12", "", "Music", "Jazz · Live Music", "An Evening of Jazz", "Live quartet performing classic and contemporary jazz · Dinner included · Doors 6:30pm · Show 8pm", "£45", "per person", "", "https://tickets.designmynight.com/an-evening-of-jazz"],
+    ["2026-04-19", "", "Music", "Acoustic · Live Music", "Acoustic Sessions", "Intimate singer-songwriter performances · Bar only entry available · Doors 7pm · Show 8pm", "15", "per person", "", "https://tickets.designmynight.com/acoustic-sessions"],
+    ["2026-04-26", "", "Theatre", "Theatre", "One Act Festival"],
+    ["2026-05-03", "", "Comedy", "Comedy", "Comedy Night", "Stand-up showcase · Doors 6pm · Show 7:30pm", "£38", "per person", "", "https://tickets.designmynight.com/comedy-night"],
+    ["2026-05-10", "", "Special", "Special Event", "Mother's Day Brunch & Show", "A special brunch with live music · Doors 11am", "£35", "per person", "", ""],
+    ["2026-05-17", "", "Music", "Jazz · Live Music", "Late Night Jazz", "An intimate late session · Bar only · Doors 9pm", "", "", "Sold out", "https://tickets.designmynight.com/late-night-jazz"],
+    ["2026-05-24", "", "Theatre", "Theatre", "Rained-Off Revue", "", "£22", "", "Cancelled", "https://tickets.designmynight.com/rained-off-revue"],
+    ["2026-05-31", "", "Music", "Folk", "Postponed Folk Night", "New date to be confirmed", "£18", "per person", "Postponed", ""],
+    ["2026-06-07", "23:00", "Music", "Club", "Midnight Session", "Late one · Doors 10pm", "£12", "", "", "https://tickets.designmynight.com/midnight-session"],
+    ["not-a-date", "", "Music", "Broken", "Row With A Bad Date", "should be skipped, not crash"],
+    ["2026-07-01", "", "", "", "", "row with only a date, no name — skipped"],
+    ["2026-08-15", "", "Cabaret", "Cabaret · Late", "Summer Cabaret", "Doors 7pm", "£28", "per person", "", "https://tickets.designmynight.com/summer-cabaret"]
+  ]
+}

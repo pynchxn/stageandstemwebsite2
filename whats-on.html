@@ -99,112 +99,17 @@
     <h1 class="section-title">What's On</h1>
     <div class="rule"><div class="rule-gem"></div></div>
 
-    <div class="filter-tabs">
-      <div class="filter-tab active" data-filter="All Events">All Events</div>
-      <div class="filter-tab" data-filter="Music">Music</div>
-      <div class="filter-tab" data-filter="Comedy">Comedy</div>
-      <div class="filter-tab" data-filter="Theatre">Theatre</div>
-      <div class="filter-tab" data-filter="Special">Special</div>
-    </div>
+    <!-- Filter tabs and event rows are built by events.js from the Google Sheet.
+         See README.md → "Events Calendar" for how staff add and remove gigs. -->
+    <div class="filter-tabs" hidden></div>
 
-    <div class="events-list">
+    <div class="events-list"></div>
 
-      <div class="event-row" data-category="Music" onclick="location.href='book_stage.html'">
-        <div class="event-row-date">
-          <div class="event-row-day">12</div>
-          <div class="event-row-month">Apr 2026</div>
-        </div>
-        <div>
-          <div class="event-row-tag">Jazz · Live Music</div>
-          <div class="event-row-name">An Evening of Jazz</div>
-          <div class="event-row-detail">Live quartet performing classic and contemporary jazz · Dinner included · Doors 6:30pm · Show 8pm</div>
-        </div>
-        <div class="event-row-action">
-          <div class="event-row-price">£45 <span>per person</span></div>
-          <a href="book_stage.html" class="btn btn--gold">Book Now</a>
-        </div>
-      </div>
-
-      <div class="event-row" data-category="Music" onclick="location.href='book_stage.html'">
-        <div class="event-row-date">
-          <div class="event-row-day">19</div>
-          <div class="event-row-month">Apr 2026</div>
-        </div>
-        <div>
-          <div class="event-row-tag">Acoustic · Live Music</div>
-          <div class="event-row-name">Acoustic Sessions</div>
-          <div class="event-row-detail">Intimate singer-songwriter performances · Bar only entry available · Doors 7pm · Show 8pm</div>
-        </div>
-        <div class="event-row-action">
-          <div class="event-row-price">£15 <span>per person</span></div>
-          <a href="book_stage.html" class="btn btn--gold">Book Now</a>
-        </div>
-      </div>
-
-      <div class="event-row" data-category="Theatre" onclick="location.href='book_stage.html'">
-        <div class="event-row-date">
-          <div class="event-row-day">26</div>
-          <div class="event-row-month">Apr 2026</div>
-        </div>
-        <div>
-          <div class="event-row-tag">Theatre</div>
-          <div class="event-row-name">One Act Festival</div>
-          <div class="event-row-detail">An evening of short theatrical performances from local companies · Dinner &amp; drinks available · Doors 6pm · Show 7pm</div>
-        </div>
-        <div class="event-row-action">
-          <div class="event-row-price">£20 <span>per person</span></div>
-          <a href="book_stage.html" class="btn btn--gold">Book Now</a>
-        </div>
-      </div>
-
-      <div class="event-row" data-category="Comedy" onclick="location.href='book_stage.html'">
-        <div class="event-row-date">
-          <div class="event-row-day">03</div>
-          <div class="event-row-month">May 2026</div>
-        </div>
-        <div>
-          <div class="event-row-tag">Comedy</div>
-          <div class="event-row-name">Comedy Night</div>
-          <div class="event-row-detail">Stand-up showcase featuring local and touring comedians · Dinner &amp; drinks included · Doors 6pm · Show 7:30pm</div>
-        </div>
-        <div class="event-row-action">
-          <div class="event-row-price">£38 <span>per person</span></div>
-          <a href="book_stage.html" class="btn btn--gold">Book Now</a>
-        </div>
-      </div>
-
-      <div class="event-row" data-category="Special" onclick="location.href='book_stage.html'">
-        <div class="event-row-date">
-          <div class="event-row-day">10</div>
-          <div class="event-row-month">May 2026</div>
-        </div>
-        <div>
-          <div class="event-row-tag">Special Event</div>
-          <div class="event-row-name">Mother's Day Brunch &amp; Show</div>
-          <div class="event-row-detail">A special brunch with live music — the perfect Mother's Day treat · Doors 11am · Brunch served from 11:30am</div>
-        </div>
-        <div class="event-row-action">
-          <div class="event-row-price">£35 <span>per person</span></div>
-          <a href="book_stage.html" class="btn btn--gold">Book Now</a>
-        </div>
-      </div>
-
-      <div class="event-row sold-out" data-category="Music">
-        <div class="event-row-date">
-          <div class="event-row-day">17</div>
-          <div class="event-row-month">May 2026</div>
-        </div>
-        <div>
-          <div class="event-row-tag">Jazz · Live Music</div>
-          <div class="event-row-name">Late Night Jazz</div>
-          <div class="event-row-detail">An intimate late session with a rotating jazz ensemble · Bar only · Doors 9pm</div>
-        </div>
-        <div class="event-row-action">
-          <div class="sold-out-badge">Sold Out</div>
-        </div>
-      </div>
-
-    </div>
+    <noscript>
+      <p class="events-message">Our live events listing needs JavaScript to load. For what’s
+      coming up, email <a href="mailto:info@stageandstem.com">info@stageandstem.com</a> or
+      follow <a href="https://www.instagram.com/stageandstem/">@stageandstem</a>.</p>
+    </noscript>
 
     <div class="hire-banner">
       <div>
@@ -248,17 +153,6 @@
   </footer>
 
   <script src="newsletter.js"></script>
-  <script>
-    document.querySelectorAll('.filter-tab').forEach(function(tab) {
-      tab.addEventListener('click', function() {
-        document.querySelectorAll('.filter-tab').forEach(function(t) { t.classList.remove('active'); });
-        this.classList.add('active');
-        var filter = this.dataset.filter;
-        document.querySelectorAll('.event-row').forEach(function(row) {
-          row.style.display = (filter === 'All Events' || row.dataset.category === filter) ? '' : 'none';
-        });
-      });
-    });
-  </script>
+  <script src="events.js"></script>
 </body>
 </html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>events.js preview harness</title>
+  <link rel="stylesheet" href="../style-stage.css" />
+  <style>
+    .preview-note {
+      max-width: 900px; margin: 1rem auto 0; padding: 1rem 1.2rem;
+      border: 1px solid rgba(201,169,110,0.3); font-size: 0.7rem; line-height: 1.8;
+      color: var(--muted); font-family: var(--font-sans);
+    }
+    .preview-note b { color: var(--accent); }
+    .preview-controls { margin-bottom: 2rem; font-family: var(--font-sans); font-size: 0.7rem; }
+    .preview-controls button {
+      background: none; border: 1px solid var(--accent-dim); color: var(--muted);
+      padding: 0.4rem 0.9rem; margin-right: 0.4rem; cursor: pointer; font: inherit;
+    }
+  </style>
+</head>
+<body>
+  <div class="preview-note">
+    <b>Local preview only.</b> This page feeds <code>events.js</code> a fixture via
+    <code>window.__EVENTS_PREVIEW_ROWS__</code> — no live sheet, no network. Dates are
+    generated relative to today, so the "past events drop off" and "tabs rebuild from
+    categories present" behaviour is visible. Use the buttons to see the empty and error states.
+    Resize the window to check tablet / mobile layout.
+  </div>
+
+  <div class="section" style="padding-top:2rem;">
+    <p class="section-eyebrow">Programme</p>
+    <h1 class="section-title">What's On</h1>
+    <div class="rule"><div class="rule-gem"></div></div>
+
+    <div class="preview-controls">
+      <button data-mode="normal">Normal listing</button>
+      <button data-mode="empty">Zero events</button>
+      <button data-mode="error">Fetch fails</button>
+    </div>
+
+    <div class="filter-tabs" hidden></div>
+    <div class="events-list"></div>
+    <noscript><p class="events-message">Needs JavaScript.</p></noscript>
+  </div>
+
+  <script>
+    // Build fixture rows relative to today so the date cutoff is demonstrable.
+    function iso(offsetDays) {
+      var d = new Date();
+      d.setDate(d.getDate() + offsetDays);
+      return d.getFullYear() + '-' +
+        String(d.getMonth() + 1).padStart(2, '0') + '-' +
+        String(d.getDate()).padStart(2, '0');
+    }
+
+    var ROWS = {
+      normal: [
+        // Column order: Date, Ends, Category, Tag, Name, Detail, Price, Price note, Status, Ticket URL
+        [iso(-14), '', 'Music', 'Jazz', 'Last Month Jazz', 'This one is in the past — should not show', '£45', 'per person', '', 'https://example.com/x'],
+        [iso(-1), '', 'Comedy', 'Comedy', 'Yesterday Comedy', 'Yesterday — should not show', '£20', '', '', 'https://example.com/x'],
+        [iso(0), '', 'Music', 'Jazz · Live Music', 'Tonight: An Evening of Jazz', 'Live quartet · Dinner included · Doors 6:30pm · Show 8pm', '£45', 'per person', '', 'https://example.com/jazz'],
+        [iso(3), '', 'Music', 'Acoustic · Live Music', 'Acoustic Sessions', 'Bar only entry available · Doors 7pm', '15', 'per person', '', 'https://example.com/acoustic'],
+        [iso(7), '', 'Theatre', '', 'One Act Festival'],
+        [iso(10), '', 'Comedy', 'Comedy', 'Comedy Night', 'Stand-up showcase · Doors 6pm · Show 7:30pm', '£38', 'per person', '', 'https://example.com/comedy'],
+        [iso(14), '', 'Special', 'Special Event', "Mother's Day Brunch & Show", 'A special brunch with live music · Doors 11am', '£35', 'per person', '', ''],
+        [iso(18), '', 'Music', 'Jazz · Live Music', 'Late Night Jazz', 'Bar only · Doors 9pm', '', '', 'Sold out', 'https://example.com/late'],
+        [iso(21), '', 'Theatre', 'Theatre', 'Rained-Off Revue', 'Was scheduled, now off', '£22', '', 'Cancelled', 'https://example.com/revue'],
+        [iso(25), '', 'Music', 'Folk', 'Folk Night', 'New date to be confirmed', '£18', 'per person', 'Postponed', ''],
+        ['not-a-date', '', 'Music', 'Broken', 'Bad Date Row', 'should be skipped silently'],
+        [iso(30), '', '', '', 'row with only a date, no name — skipped']
+      ],
+      empty: [
+        [iso(-5), '', 'Music', 'Jazz', 'Already Passed', '', '£10', '', '', '']
+      ]
+    };
+
+    var params = new URLSearchParams(location.search);
+    var mode = params.get('mode') || 'normal';
+
+    if (mode === 'error') {
+      window.__EVENTS_PREVIEW_ROWS__ = null;
+      var _fetch = window.fetch;
+      window.fetch = function () { return Promise.reject(new Error('simulated network failure')); };
+      // events.js will hit the REPLACE_WITH guard first and reject anyway — either way, error state.
+    } else {
+      window.__EVENTS_PREVIEW_ROWS__ = ROWS[mode] || ROWS.normal;
+    }
+
+    document.querySelectorAll('.preview-controls button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        location.search = '?mode=' + b.dataset.mode;
+      });
+    });
+  </script>
+  <script src="../events.js"></script>
+</body>
+</html>

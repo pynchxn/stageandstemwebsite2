@@ -367,6 +367,33 @@ a.card .card-body  { color: var(--muted); }
   padding: 0.5rem 1rem;
 }
 
+/* Rows with no ticket link (built by events.js) — not clickable. */
+.event-row--static { cursor: default; }
+.event-row--static:hover { background: transparent; }
+
+/* Cancelled / Postponed events (Status column in the sheet). */
+.event-row.cancelled { opacity: 0.45; }
+.event-row.cancelled .event-row-name { text-decoration: line-through; }
+.event-row.postponed .event-row-name { opacity: 0.7; }
+.event-status-badge {
+  font-size: 0.55rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid rgba(201,169,110,0.2);
+  padding: 0.5rem 1rem;
+  white-space: nowrap;
+}
+
+/* Loading / empty / error line shown in place of the event list. */
+.events-message {
+  font-size: 0.8rem;
+  line-height: 1.9;
+  color: var(--muted);
+  padding: 2rem 0;
+}
+.events-message a { color: var(--accent); }
+
 .hire-banner {
   margin-top: 4rem;
   border: 1px solid var(--accent-dim);
