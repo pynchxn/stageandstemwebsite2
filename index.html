@@ -116,11 +116,20 @@
       left: 50%;
       top: 10%;
       height: 80%;
-      width: 0px;
-      background: linear-gradient(to bottom, transparent, rgba(201,169,110,0.3) 30%, rgba(201,169,110,0.3) 70%, transparent);
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba(201,169,110,0.7) 25%, rgba(201,169,110,0.7) 75%, transparent);
+      box-shadow: 0 0 6px rgba(201,169,110,0.35);
       transform: translateX(-50%);
       pointer-events: none;
       z-index: 5;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    /* Reveal the gold divider when either side is hovered */
+    body.hover-stage  .divider,
+    body.hover-bistro .divider {
+      opacity: 1;
     }
 
     /* ── CENTRE LOGO ── */

@@ -54,6 +54,7 @@ All files are in the repository root:
 ├── stage.html              ← Stage home
 ├── whats-on.html           ← Stage: events/programme with filter tabs
 ├── perform-with-us.html    ← Stage: performer & hire enquiries
+├── venue-hire.html         ← Stage: venue hire info — rates, stage specs, seating capacities
 ├── contact_stage.html      ← Stage contact
 ├── book_stage.html         ← Stage: Eventbrite ticket booking page
 │
@@ -144,17 +145,20 @@ Also carries the shared vision classes: `.vision-strip`, `.vision-copy`, `.visio
 | `stage.html` | Stage home — hero + upcoming events cards |
 | `whats-on.html` | Programme/events listing — built from a Google Sheet by `events.js` |
 | `perform-with-us.html` | Info for performers + hire enquiries |
+| `venue-hire.html` | Venue hire info — hire rates, stage dimensions, seating capacities, sound/lighting rig, booking terms. Transcribes `stage-tech-specs.jpeg` into real HTML; both spec files stay linked as downloads |
 | `contact_stage.html` | Contact for performance/hire |
 | `book_stage.html` | Ticket booking via Eventbrite embed |
 
 ### Navigation (all stage pages)
-Home · About · What's On · Perform With Us · Contact · **Bistro** (gold crosslink) — with the full `logo.png` as the nav logo. The Bistro crosslink is styled as `.nav-crosslink-item` / `.nav-crosslink` and separated from the main links by a thin gold vertical border.
+Home · About · What's On · Perform With Us · Venue Hire · Contact · **Bistro** (gold crosslink) — with the full `logo.png` as the nav logo. The Bistro crosslink is styled as `.nav-crosslink-item` / `.nav-crosslink` and separated from the main links by a thin gold vertical border.
 
 ### Cross-links within content
 - `stage.html` cabaret card → `book-a-table.html`; CTAs → `whats-on.html`
 - `whats-on.html` event rows & Book Now buttons → each event's `Ticket URL` from the sheet (usually a DesignMyNight ticket page); external links open in a new tab
-- `whats-on.html` private hire banner → `contact_stage.html`
-- `perform-with-us.html` CTA → `contact_stage.html`
+- `whats-on.html` private hire banner → `venue-hire.html`
+- `perform-with-us.html` CTA → `contact_stage.html`; "Hire the Stage" card & Technical Specifications card → `venue-hire.html`
+- `venue-hire.html` CTAs → `contact_stage.html`; still links `stage-tech-specs.jpeg` & `sound-specs.pdf` as downloads
+- `contact_stage.html` stage-specs FAQ → `venue-hire.html`
 - `contact_stage.html` inline note → `book-a-table.html`
 - Footer on every stage page links to `bistro.html`
 
@@ -224,7 +228,7 @@ A full-bleed teaser band sits between the hero and the first content section on 
 `.vision-signoff` is shared with `about.html`. Do **not** rebuild this band on `.newsletter-strip` — nothing would break in testing (`newsletter.js` only walks up from a submitted form), but a later restyle of the newsletter would silently restyle two vision bands. The gold rule, the larger focal line and the text-link ending are what stop this band and the newsletter strip below it reading as twins on the same page.
 
 ### Nav density
-The About link makes both navs six items. Below ~884px the stage nav no longer fits beside the logo, and because `.nav-links` children keep the default `flex-shrink: 1`, "Perform With Us" wraps to a second line rather than overflowing. A `@media (min-width: 769px) and (max-width: 960px)` block in both stylesheets tightens the gap, padding and tracking to cover that band. **The `min-width: 769px` lower bound is load-bearing** — without it the block would override the mobile nav rules. Stage is the binding side here, not bistro: "Perform With Us" is ~30% wider than "Book a Table".
+The stage nav is seven items (Home · About · What's On · Perform With Us · Venue Hire · Contact · Bistro crosslink); the bistro nav is fewer. Below ~1100px the stage nav no longer fits beside the logo, and because `.nav-links` children keep the default `flex-shrink: 1`, "Perform With Us" wraps to a second line rather than overflowing. A `@media (min-width: 769px) and (max-width: 1100px)` block in `style-stage.css` tightens the gap, padding and tracking to cover that band (the bistro stylesheet keeps its narrower `max-width: 960px` version). **The `min-width: 769px` lower bound is load-bearing** — without it the block would override the mobile nav rules. Stage is the binding side: "Perform With Us" is ~30% wider than "Book a Table", and Venue Hire adds a seventh item.
 
 ---
 
@@ -631,9 +635,9 @@ The landing page also includes a `.visually-hidden` `<h1>` ("Stage & Stem — Pe
 
 ### Structured data (JSON-LD)
 Each page's `<head>` includes one or more `<script type="application/ld+json">` blocks:
-- **`Organization`** — on every content page. Carries name, URL, logo, image, `sameAs` (Instagram, Facebook, TikTok), Richmond Road `PostalAddress`, and a `contactPoint` with `info@stageandstem.com`. Its `description` is paragraph 1 of the client's vision statement, duplicated across 11 pages — note it contains the word "new", which will date.
+- **`Organization`** — on every content page. Carries name, URL, logo, image, `sameAs` (Instagram, Facebook, TikTok), Richmond Road `PostalAddress`, and a `contactPoint` with `info@stageandstem.com`. Its `description` is paragraph 1 of the client's vision statement, duplicated across 12 pages — note it contains the word "new", which will date.
 - **`Restaurant`** — on the four bistro pages (`bistro`, `menus`, `book-a-table`, `contact_bistro`). Includes `priceRange: "£"`, `currenciesAccepted: "GBP"`, `hasMenu: ".../menus.html"`, `acceptsReservations: true`.
-- **`PerformingArtsTheater`** — on the five stage pages (`stage`, `whats-on`, `perform-with-us`, `contact_stage`, `book_stage`).
+- **`PerformingArtsTheater`** — on the six stage pages (`stage`, `whats-on`, `perform-with-us`, `venue-hire`, `contact_stage`, `book_stage`). `venue-hire.html` additionally sets `maximumAttendeeCapacity: 182`.
 - **`AboutPage`** — on `about.html` only. Points `mainEntity` at the `#organization` node. `PerformingArtsTheater` / `Restaurant` are deliberately omitted there — both are already defined on nine other pages with their own canonical `url`, so a copy would add nothing and muddy which URL owns the entity.
 - **`FAQPage`** — on both contact pages (`contact_bistro`, `contact_stage`), mirroring the visible FAQ section on each page (opening hours / bookings / parking / accessibility, etc.).
 

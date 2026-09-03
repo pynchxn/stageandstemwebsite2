@@ -491,6 +491,94 @@ a.card .card-body  { color: var(--muted); }
   gap: 1.5rem;
 }
 .hours-list li span:last-child { white-space: nowrap; }
+
+/* ── SPEC / HIRE LISTS (venue-hire.html) ── */
+/* Full-width label/value list — generalises .hours-list for stage dimensions,
+   capacities and rates. Same type ramp. */
+.spec-list {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  font-size: 0.75rem;
+  line-height: 1.9;
+  color: var(--muted);
+  max-width: 34rem;
+}
+.spec-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid rgba(201,169,110,0.08);
+}
+.spec-list li:last-child { border-bottom: 0; }
+.spec-list .spec-label { color: var(--white); }
+.spec-list .spec-value { white-space: nowrap; text-align: right; }
+
+/* Gold-tick feature list — "at a glance", stage features, extras. */
+.tick-list {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  columns: 2;
+  column-gap: 3rem;
+  font-size: 0.75rem;
+  line-height: 2.2;
+  color: var(--muted);
+  max-width: 40rem;
+}
+.tick-list li {
+  break-inside: avoid;
+  padding-left: 1.2rem;
+  position: relative;
+}
+.tick-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.85em;
+  width: 5px;
+  height: 5px;
+  background: var(--accent);
+  transform: rotate(45deg);
+  opacity: 0.6;
+}
+@media (max-width: 600px) { .tick-list { columns: 1; } }
+
+/* Gold eyebrow sub-heading inside a section. */
+.spec-subhead {
+  font-size: 0.58rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 2.5rem 0 0;
+}
+
+/* ── VENUE HIRE — centred composition ── */
+/* venue-hire.html reads as one centred column, the same shape as about.html's
+   .vision-section — a modifier on .section, not a replacement. */
+.hire-section { text-align: center; }
+.hire-section > p { margin-left: auto; margin-right: auto; }
+.hire-section .spec-list { margin-left: auto; margin-right: auto; }
+.hire-section .tick-list {
+  columns: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 1.7rem;
+  max-width: 46rem;
+  margin: 1.5rem auto 0;
+  text-align: left;
+}
+.hire-section .hire-banner {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+/* Four seating cards read as a symmetrical 2×2 block rather than 3 + 1 orphan. */
+.cards--quad { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 44rem; margin-left: auto; margin-right: auto; }
+@media (max-width: 600px) { .cards--quad { grid-template-columns: 1fr; } }
+
 .contact-faqs {
   margin-top: 5rem;
   border-top: 1px solid var(--accent-dim);
@@ -800,13 +888,13 @@ footer {
   .vision-strip { padding: 3.5rem 1.5rem; }
 }
 
-/* ── NAV DENSITY (six-item nav) ── */
-/* Between the burger breakpoint and ~960px a six-item nav no longer fits beside
-   the logo at the default 2.5rem gap — the <li>s shrink and "Perform With Us"
-   wraps to two lines. Bounded with min-width:769px so it can never leak into the
-   768px mobile block, which sets its own nav padding and a zero gap. */
-@media (min-width: 769px) and (max-width: 960px) {
+/* ── NAV DENSITY (seven-item nav) ── */
+/* Between the burger breakpoint and ~1100px a seven-item nav no longer fits
+   beside the logo at the default 2.5rem gap — the <li>s shrink and "Perform With
+   Us" wraps to two lines. Bounded with min-width:769px so it can never leak into
+   the 768px mobile block, which sets its own nav padding and a zero gap. */
+@media (min-width: 769px) and (max-width: 1100px) {
   nav { padding: 1.8rem 2rem; }
-  .nav-links { gap: 1.5rem; }
-  .nav-links a { letter-spacing: 0.2em; }
+  .nav-links { gap: 1.1rem; }
+  .nav-links a { letter-spacing: 0.15em; }
 }
