@@ -54,6 +54,7 @@ All files are in the repository root:
 ├── stage.html              ← Stage home
 ├── whats-on.html           ← Stage: events/programme with filter tabs
 ├── perform-with-us.html    ← Stage: performer & hire enquiries
+├── performer-database.html ← Stage: performer sign-up landing page (links out to a Google Form)
 ├── venue-hire.html         ← Stage: venue hire info — rates, stage specs, seating capacities
 ├── contact_stage.html      ← Stage contact
 ├── book_stage.html         ← Stage: Eventbrite ticket booking page
@@ -145,18 +146,20 @@ Also carries the shared vision classes: `.vision-strip`, `.vision-copy`, `.visio
 | `stage.html` | Stage home — hero + upcoming events cards |
 | `whats-on.html` | Programme/events listing — built from a Google Sheet by `events.js` |
 | `perform-with-us.html` | Info for performers + hire enquiries |
+| `performer-database.html` | Performer sign-up landing page — pitches the roster, lists what to have ready, links out to the Google intake form (new tab). No iframe embed |
 | `venue-hire.html` | Venue hire info — hire rates, stage dimensions, seating capacities, sound/lighting rig, booking terms. Transcribes `stage-tech-specs.jpeg` into real HTML; both spec files stay linked as downloads |
 | `contact_stage.html` | Contact for performance/hire |
 | `book_stage.html` | Ticket booking via Eventbrite embed |
 
 ### Navigation (all stage pages)
-Home · About · What's On · Perform With Us · Venue Hire · Contact · **Bistro** (gold crosslink) — with the full `logo.png` as the nav logo. The Bistro crosslink is styled as `.nav-crosslink-item` / `.nav-crosslink` and separated from the main links by a thin gold vertical border.
+Nav (7 items): Home · About · What's On · Perform With Us · Venue Hire · Contact · **Bistro** (gold crosslink) — with the full `logo.png` as the nav logo. The Bistro crosslink is styled as `.nav-crosslink-item` / `.nav-crosslink` and separated from the main links by a thin gold vertical border. `performer-database.html` is deliberately **not** in the nav or footer; it is reached only from the "Join our performer database" call-out on `perform-with-us.html`.
 
 ### Cross-links within content
 - `stage.html` cabaret card → `book-a-table.html`; CTAs → `whats-on.html`
 - `whats-on.html` event rows & Book Now buttons → each event's `Ticket URL` from the sheet (usually a DesignMyNight ticket page); external links open in a new tab
 - `whats-on.html` private hire banner → `venue-hire.html`
-- `perform-with-us.html` CTA → `contact_stage.html`; "Hire the Stage" card & Technical Specifications card → `venue-hire.html`
+- `perform-with-us.html` CTA → `contact_stage.html`; "Hire the Stage" card & Technical Specifications card → `venue-hire.html`; performer-database call-out → `performer-database.html`
+- `performer-database.html` CTA → the Google intake form (external, new tab; URL hard-coded in the page's `.btn` `href` — swap that one link to change forms); back-link → `perform-with-us.html`
 - `venue-hire.html` CTAs → `contact_stage.html`; still links `stage-tech-specs.jpeg` & `sound-specs.pdf` as downloads
 - `contact_stage.html` stage-specs FAQ → `venue-hire.html`
 - `contact_stage.html` inline note → `book-a-table.html`
@@ -635,10 +638,10 @@ The landing page also includes a `.visually-hidden` `<h1>` ("Stage & Stem — Pe
 
 ### Structured data (JSON-LD)
 Each page's `<head>` includes one or more `<script type="application/ld+json">` blocks:
-- **`Organization`** — on every content page. Carries name, URL, logo, image, `sameAs` (Instagram, Facebook, TikTok), Richmond Road `PostalAddress`, and a `contactPoint` with `info@stageandstem.com`. Its `description` is paragraph 1 of the client's vision statement, duplicated across 12 pages — note it contains the word "new", which will date.
+- **`Organization`** — on every content page. Carries name, URL, logo, image, `sameAs` (Instagram, Facebook, TikTok), Richmond Road `PostalAddress`, and a `contactPoint` with `info@stageandstem.com`. Its `description` is paragraph 1 of the client's vision statement, duplicated across 13 pages — note it contains the word "new", which will date.
 - **`Restaurant`** — on the four bistro pages (`bistro`, `menus`, `book-a-table`, `contact_bistro`). Includes `priceRange: "£"`, `currenciesAccepted: "GBP"`, `hasMenu: ".../menus.html"`, `acceptsReservations: true`.
-- **`PerformingArtsTheater`** — on the six stage pages (`stage`, `whats-on`, `perform-with-us`, `venue-hire`, `contact_stage`, `book_stage`). `venue-hire.html` additionally sets `maximumAttendeeCapacity: 182`.
-- **`AboutPage`** — on `about.html` only. Points `mainEntity` at the `#organization` node. `PerformingArtsTheater` / `Restaurant` are deliberately omitted there — both are already defined on nine other pages with their own canonical `url`, so a copy would add nothing and muddy which URL owns the entity.
+- **`PerformingArtsTheater`** — on the seven stage pages (`stage`, `whats-on`, `perform-with-us`, `performer-database`, `venue-hire`, `contact_stage`, `book_stage`). `venue-hire.html` additionally sets `maximumAttendeeCapacity: 182`.
+- **`AboutPage`** — on `about.html` only. Points `mainEntity` at the `#organization` node. `PerformingArtsTheater` / `Restaurant` are deliberately omitted there — both are already defined on ten other pages with their own canonical `url`, so a copy would add nothing and muddy which URL owns the entity.
 - **`FAQPage`** — on both contact pages (`contact_bistro`, `contact_stage`), mirroring the visible FAQ section on each page (opening hours / bookings / parking / accessibility, etc.).
 
 Restaurant and Theater both link back to the Organization via `parentOrganization: { "@id": "https://stageandstem.com/#organization" }`.
@@ -646,7 +649,7 @@ Restaurant and Theater both link back to the Organization via `parentOrganizatio
 **Currently omitted from the schema** (add as a follow-up when known): `telephone`, `openingHoursSpecification`, `servesCuisine`.
 
 ### `sitemap.xml` and `robots.txt`
-`sitemap.xml` lists the 11 indexable pages (`404.html` is excluded) with `<lastmod>`, `<changefreq>` and `<priority>`. `robots.txt` allows all crawlers and points to the sitemap.
+`sitemap.xml` lists the 13 indexable pages (`404.html` and `booking-confirmed.html` are excluded) with `<lastmod>`, `<changefreq>` and `<priority>`. `robots.txt` allows all crawlers and points to the sitemap.
 
 After deploying, submit `https://stageandstem.com/sitemap.xml` to Google Search Console.
 

@@ -554,13 +554,14 @@ a.card .card-body  { color: var(--muted); }
   margin: 2.5rem 0 0;
 }
 
-/* ── VENUE HIRE — centred composition ── */
-/* venue-hire.html reads as one centred column, the same shape as about.html's
-   .vision-section — a modifier on .section, not a replacement. */
-.hire-section { text-align: center; }
-.hire-section > p { margin-left: auto; margin-right: auto; }
-.hire-section .spec-list { margin-left: auto; margin-right: auto; }
-.hire-section .tick-list {
+/* ── CENTRED CONTENT COMPOSITION ── */
+/* venue-hire.html and performer-database.html each read as one centred column,
+   the same shape as about.html's .vision-section — a modifier on .section, not
+   a replacement. */
+.centred-section { text-align: center; }
+.centred-section > p { margin-left: auto; margin-right: auto; }
+.centred-section .spec-list { margin-left: auto; margin-right: auto; }
+.centred-section .tick-list {
   columns: auto;
   display: flex;
   flex-wrap: wrap;
@@ -570,7 +571,7 @@ a.card .card-body  { color: var(--muted); }
   margin: 1.5rem auto 0;
   text-align: left;
 }
-.hire-section .hire-banner {
+.centred-section .hire-banner {
   flex-direction: column;
   align-items: center;
   text-align: center;
