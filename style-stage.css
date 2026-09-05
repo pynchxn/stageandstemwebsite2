@@ -528,6 +528,7 @@ a.card .card-body  { color: var(--muted); }
   max-width: 40rem;
 }
 .tick-list li {
+  list-style: none;
   break-inside: avoid;
   padding-left: 1.2rem;
   position: relative;
