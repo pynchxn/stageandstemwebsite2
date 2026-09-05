@@ -742,6 +742,22 @@ footer {
 .social-links a:hover { color: var(--accent); }
 .social-links svg { width: 18px; height: 18px; display: block; }
 
+/* ── SITE CREDIT ── */
+.site-credit {
+  padding: 1.2rem 4rem;
+  text-align: center;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(245,242,237,0.18);
+}
+.site-credit a {
+  color: rgba(245,242,237,0.35);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.site-credit a:hover { color: var(--accent); }
+
 /* ── MOBILE NAV (hamburger) ── */
 .nav-toggle { display: none; }
 .nav-burger { display: none; }
@@ -794,6 +810,7 @@ footer {
   .nav-toggle:checked ~ .nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
   .section { padding: 4rem 1.5rem; }
   footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+  .site-credit { padding: 1rem 1.5rem; }
   /* Long-label buttons (e.g. the mailto CTA) must not push past a narrow screen. */
   .btn { max-width: 100%; padding-left: 1.4rem; padding-right: 1.4rem; letter-spacing: 0.18em; overflow-wrap: anywhere; }
 }
