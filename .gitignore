@@ -1,0 +1,13 @@
+# macOS Finder metadata
+.DS_Store
+
+# Camera originals sit in Photos/ as local masters — not committed, not deployed.
+# Only the optimised derivatives are:
+#   tools/optimize-photos.sh  ->  Photos/web/*.jpg  +  Photos/thumb/*.jpg
+# (these patterns are top-level only, so Photos/web/ and Photos/thumb/ are unaffected)
+/Photos/*.jpg
+/Photos/*.jpeg
+/Photos/*.png
+/Photos/*.JPG
+/Photos/*.JPEG
+/Photos/*.PNG

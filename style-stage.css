@@ -860,6 +860,24 @@ footer {
   margin-right: auto;
 }
 
+/* Brand mark above the "Our Vision" statement on about.html. about.html is
+   stage-side only, so this lives here, not in style-bistro.css. The supplied
+   PNG is near-white line art on transparency — held back slightly so it sits
+   in the dark palette rather than glaring, matching .signoff-star's opacity. */
+.page-mast {
+  text-align: center;
+  padding: 4rem 2rem 0;
+}
+.page-mast img {
+  width: 250px;
+  max-width: 62%;
+  height: auto;
+  opacity: 0.9;
+}
+@media (max-width: 768px) {
+  .page-mast { padding-top: 2.5rem; }
+}
+
 .vision-signoff {
   font-family: var(--font-serif);
   font-weight: 300;
@@ -908,6 +926,157 @@ footer {
 
 @media (max-width: 768px) {
   .vision-strip { padding: 3.5rem 1.5rem; }
+}
+
+/* ── PHOTOGRAPHY ──
+   Restrained image treatment: framed like .card / .map-container and held slightly
+   back in the dark palette so type stays dominant. IDENTICAL in both stylesheets
+   (fork, not theme) — --tint / --bg-2 resolve per side (indigo on stage, amber on bistro). */
+.figure {
+  position: relative;
+  border: 1px solid var(--accent-dim);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--bg-2);
+  margin: 3rem auto;
+  max-width: 900px;
+}
+.figure > a { display: block; }
+.figure img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  filter: brightness(0.82) saturate(0.92);
+  transition: filter 0.6s ease;
+}
+.figure:hover img { filter: brightness(0.96) saturate(1); }
+/* faint theme wash ties the photo to the page's colour temperature */
+.figure::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--tint);
+  pointer-events: none;
+}
+
+/* 3-up strip — about.html and menus.html only. Drops to one column on mobile. */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 3rem auto;
+  max-width: 1100px;
+}
+.gallery .figure { margin: 0; max-width: none; }
+.gallery .figure img { aspect-ratio: 4 / 5; }
+
+@media (max-width: 768px) {
+  .figure  { margin: 2.5rem auto; }
+  .gallery { grid-template-columns: 1fr; margin: 2.5rem auto; }
+  .gallery .figure img { aspect-ratio: 3 / 2; }  /* stacked — keep each one short */
+}
+
+/* ── GALLERY LIGHTBOX ──
+   about.html only. gallery.js loads there alone; every other page just links to
+   about.html#gallery, so this is not duplicated to style-bistro.css — same call
+   as .page-mast above. The grid is the shared .gallery; [data-lightbox] is the
+   clickable, paged variant (square cells, hover zoom). */
+.gallery[data-lightbox] .figure { margin: 0; cursor: pointer; }
+.gallery[data-lightbox] .figure img {
+  aspect-ratio: 1 / 1;
+  transition: filter 0.6s ease, transform 0.6s ease;
+}
+.gallery[data-lightbox] .figure:hover img {
+  filter: brightness(1) saturate(1);
+  transform: scale(1.04);
+}
+
+/* Overlay — built by gallery.js, appended to <body>. */
+.lightbox[hidden] { display: none; }
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  background: rgba(8, 8, 15, 0.94);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.lightbox.is-open { opacity: 1; }
+.lightbox-stage {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: 100%;
+}
+.lightbox-img {
+  display: block;
+  max-width: 90vw;
+  max-height: 82vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border: 1px solid var(--accent-dim);
+}
+.lightbox-meta {
+  display: flex;
+  gap: 0.9rem;
+  align-items: baseline;
+  max-width: 90vw;
+  font-size: 0.58rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.lightbox-count { flex-shrink: 0; color: var(--accent); }
+.lightbox-cap { letter-spacing: 0.16em; }
+
+.lightbox-close,
+.lightbox-nav {
+  position: absolute;
+  background: none;
+  border: 0;
+  color: var(--accent);
+  cursor: pointer;
+  font-family: var(--font-serif);
+  line-height: 1;
+  transition: color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.lightbox-close:hover,
+.lightbox-nav:hover { color: var(--white); }
+.lightbox-close { top: 0.8rem; right: 1.2rem; font-size: 2.4rem; }
+.lightbox-nav {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3.5rem;
+  height: 5rem;
+  font-size: 3rem;
+}
+.lightbox-prev { left: 0.2rem; }
+.lightbox-next { right: 0.2rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lightbox { transition: none; }
+  .gallery[data-lightbox] .figure img,
+  .gallery[data-lightbox] .figure:hover img { transition: none; transform: none; }
+}
+
+@media (max-width: 768px) {
+  .gallery[data-lightbox] { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .gallery[data-lightbox] .figure img { aspect-ratio: 1 / 1; }
+  .lightbox { padding: 2.5rem 0.25rem; }
+  .lightbox-img { max-width: 96vw; max-height: 78vh; }
+  .lightbox-nav { width: 2.6rem; height: 4rem; font-size: 2.4rem; }
+  .lightbox-prev { left: 0; }
+  .lightbox-next { right: 0; }
+  .lightbox-close { top: 0.5rem; right: 0.7rem; }
 }
 
 /* ── NAV DENSITY (seven-item nav) ── */

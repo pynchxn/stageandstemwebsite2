@@ -720,6 +720,77 @@ footer {
   .vision-strip { padding: 3.5rem 1.5rem; }
 }
 
+/* ── PHOTOGRAPHY ──
+   Restrained image treatment: framed like .card / .map-container and held slightly
+   back in the dark palette so type stays dominant. IDENTICAL in both stylesheets
+   (fork, not theme) — --tint / --bg-2 resolve per side (indigo on stage, amber on bistro). */
+.figure {
+  position: relative;
+  border: 1px solid var(--accent-dim);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--bg-2);
+  margin: 3rem auto;
+  max-width: 900px;
+}
+.figure > a { display: block; }
+.figure img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  filter: brightness(0.82) saturate(0.92);
+  transition: filter 0.6s ease;
+}
+.figure:hover img { filter: brightness(0.96) saturate(1); }
+/* faint theme wash ties the photo to the page's colour temperature */
+.figure::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--tint);
+  pointer-events: none;
+}
+
+/* 3-up strip — about.html and menus.html only. Drops to one column on mobile. */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 3rem auto;
+  max-width: 1100px;
+}
+.gallery .figure { margin: 0; max-width: none; }
+.gallery .figure img { aspect-ratio: 4 / 5; }
+
+@media (max-width: 768px) {
+  .figure  { margin: 2.5rem auto; }
+  .gallery { grid-template-columns: 1fr; margin: 2.5rem auto; }
+  .gallery .figure img { aspect-ratio: 3 / 2; }  /* stacked — keep each one short */
+}
+
+/* ── MENU PICKER (menus.html) ──
+   Each photo is paired with its menu card in one .menu-pick wrapper, so the two
+   stay together when the 3-up grid collapses to a single column on mobile
+   (previously the photos and the cards were separate grids and drifted apart). */
+.menu-picks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 3rem auto;
+  max-width: 1100px;
+}
+.menu-pick { display: flex; flex-direction: column; }
+.menu-pick .figure { margin: 0; max-width: none; }
+.menu-pick .figure img { aspect-ratio: 4 / 5; }
+.menu-pick .card { flex: 1; margin-top: 2.5rem; }  /* flex:1 keeps the cards level across the row */
+
+@media (max-width: 768px) {
+  .menu-picks { grid-template-columns: 1fr; row-gap: 3.5rem; margin: 2.5rem auto; }
+  .menu-pick .figure img { aspect-ratio: 3 / 2; }
+  .menu-pick .card { margin-top: 1.25rem; }  /* photo hugs its card; the 3.5rem row-gap separates the pairs */
+}
+
 /* ── NAV DENSITY (six-item nav) ── */
 /* Between the burger breakpoint and ~960px a six-item nav no longer fits beside
    the logo at the default 2.5rem gap — the <li>s shrink and "Perform With Us"

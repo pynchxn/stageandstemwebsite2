@@ -617,6 +617,65 @@ The FAQ entries are static (no accordion, no JavaScript). All questions and answ
 
 ---
 
+## Photography & Gallery
+
+### Where photos live
+
+Camera originals go in **`Photos/`**. They are large (camera JPEGs, 15–30 MB each) and are
+**not committed or uploaded** — `.gitignore` excludes `Photos/*.jpg|jpeg|png`. What ships is
+generated:
+
+```
+tools/optimize-photos.sh          macOS only (sips). Regenerates ↓ from Photos/*
+  → Photos/web/<name>.jpg          ≤ 1600 px, q78 — large view / lightbox
+  → Photos/thumb/<name>.jpg        ≤  800 px, q60 — grid thumbnails
+```
+
+`tools/` is a dev folder — like `test/`, **not uploaded to Fasthosts**. `Photos/web/` and
+`Photos/thumb/` **are**.
+
+### The `.figure` component (`style-*.css`, both files, byte-identical)
+
+A single framed photo, styled like `.card` (1 px gold border, 4 px radius) and held back in
+the dark palette (`filter: brightness(0.82)`, a faint `--tint` wash). Used once per page as a
+quiet accent:
+
+```html
+<figure class="figure">
+  <img src="Photos/web/food.jpg" alt="…" loading="lazy" decoding="async" />
+</figure>
+```
+
+Placed on `stage.html`, `bistro.html` (both wrapped in a link to the gallery, with a
+`View the gallery →` line under), `whats-on.html`, `perform-with-us.html`, `book-a-table.html`,
+and as a 3-up `.gallery` (portrait cells) on `menus.html`.
+
+### The gallery + lightbox (`about.html`, `gallery.js`)
+
+`about.html` carries the full gallery: a `.gallery[data-lightbox]` — the shared 3-across grid,
+square cells — where `gallery.js` turns each thumbnail into a click-to-enlarge lightbox you can
+page through (on-screen arrows, `←`/`→`, swipe, wrap-around; `Esc` / `×` / backdrop closes). It
+is **progressive enhancement**: each `<figure>` is `<a href="Photos/web/…"><img
+src="Photos/thumb/…"></a>`, so with no JS a click just opens the full image.
+
+`gallery.js` loads on `about.html` only. Every other page links to it — `about.html#gallery` in
+the footer sitewide, an inline note on both contact pages, and the photo on `stage.html` /
+`bistro.html`. `style-stage.css` carries the lightbox CSS (about.html is stage-side); it is
+**not** duplicated to `style-bistro.css`, same call as `.page-mast`.
+
+### To add a photo
+
+1. Drop the original into `Photos/`.
+2. Run `sh tools/optimize-photos.sh`.
+3. Add one `<figure>` line to the `.gallery` in `about.html` (copy an existing line, change the
+   two file names and the `alt`). For a one-off page placement, point that page's `<img src>`
+   at `Photos/web/<name>.jpg`.
+4. Commit `Photos/web/` + `Photos/thumb/`; upload those two folders.
+
+Eyeball the lightbox via `test/gallery-preview.html` (served from the project root).
+
+---
+
 ## SEO & Discoverability
 
 Every content page carries the same SEO scaffolding directly in its `<head>` — there is no template engine, so additions are duplicated across pages.
@@ -700,7 +759,7 @@ Because the site is flat (all files in the root), every link and asset reference
 ## What Still Needs Building / Improving
 
 - [ ] Wire up Eventbrite event ID in `book_stage.html` (replace placeholder embed)
-- [ ] Real content from the client (copy, images, actual menu)
+- [x] Photography — real photos in place (per-page `.figure` accents + the `about.html` gallery / lightbox). See "Photography & Gallery". Menu copy is still placeholder.
 - [ ] Contact forms (still email links only — bistro table booking now uses DesignMyNight)
 - [ ] Phone number, opening hours and `servesCuisine` — currently omitted from JSON-LD; add when confirmed
 - [ ] Uncomment the force-HTTPS rule in `.htaccess` once SSL is provisioned on the domain
@@ -712,7 +771,7 @@ Because the site is flat (all files in the root), every link and asset reference
 
 ## Known Issues / Cleanup Candidates
 
-- **`.DS_Store` is tracked in git.** This is a macOS Finder metadata file with no purpose in the repo. It should be removed and added to a `.gitignore`.
+- **`.DS_Store`** — now covered by `.gitignore` (added alongside the photo work). Any `.DS_Store` still tracked from before should be `git rm --cached`'d.
 
 ---
 

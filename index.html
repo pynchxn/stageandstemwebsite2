@@ -63,6 +63,7 @@
     body {
       background: #080808;
       height: 100vh;
+      height: 100dvh;
       width: 100vw;
       overflow: hidden;
       display: flex;
@@ -79,13 +80,16 @@
       cursor: pointer;
       text-decoration: none;
       transition: background 0.6s ease;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .panel--stage  { background: #080808; }
     .panel--bistro { background: #080808; }
 
-    .panel--stage:hover  { background: #0c0c14; }
-    .panel--bistro:hover { background: #0e0b07; }
+    .panel--stage:hover,
+    .panel--stage:active  { background: #0c0c14; }
+    .panel--bistro:hover,
+    .panel--bistro:active { background: #0e0b07; }
 
     /* Label */
     .panel__label {
@@ -103,6 +107,9 @@
 
     .panel--stage  .panel__label { left: 10%; }
     .panel--bistro .panel__label { right: 10%; text-align: right; }
+
+    /* Tap hint — revealed only on touch devices (see coarse-pointer media query) */
+    .panel__cta { display: none; }
 
     .panel--stage:hover  .panel__label,
     .panel--bistro:hover .panel__label {
@@ -200,12 +207,55 @@
       white-space: nowrap;
       border: 0;
     }
+    /* ── TOUCH DEVICES ──
+       No hover to reveal each side, so make both choices permanently legible:
+       a full-strength label plus an "Enter →" hint sitting level with the
+       centre logo — Performance Space beside the left half, Bistro beside the
+       right — with the gold divider always showing the split. Labels are a
+       little smaller here so they clear the logo. */
     @media (hover: none) and (pointer: coarse) {
-      .panel__label {
-        opacity: 0.35;
-        transform: translateY(0);
-        font-size: 0.75rem;
+      .panel {
+        flex-direction: column;
+        justify-content: center;
+        padding: 0 5vw;
       }
+
+      .panel--stage  { align-items: flex-start; }
+      .panel--bistro { align-items: flex-end; }
+
+      .logo-wrap { max-width: 26vw; }
+
+      .panel__label {
+        position: static;
+        opacity: 1;
+        transform: none;
+        display: flex;
+        align-items: flex-end;
+        line-height: 1.15;
+        min-height: 2.4em;      /* reserve two lines both sides so the hints line up */
+        max-width: 30vw;
+        font-size: clamp(0.85rem, 4vw, 1.3rem);
+      }
+
+      .panel--stage  .panel__label { left: auto; right: auto; text-align: left; }
+      .panel--bistro .panel__label { left: auto; right: auto; text-align: right; justify-content: flex-end; }
+
+      .panel__cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35em;
+        margin-top: 0.55rem;
+        padding-top: 0.45rem;
+        border-top: 1px solid rgba(201,169,110,0.3);
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 400;
+        font-size: 0.58rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(201,169,110,0.75);
+      }
+
+      .divider { opacity: 1; }
     }
   </style>
 </head>
@@ -215,6 +265,7 @@
 
   <a class="panel panel--stage" href="stage.html">
     <span class="panel__label">Performance Space</span>
+    <span class="panel__cta" aria-hidden="true">Enter &rarr;</span>
   </a>
 
   <div class="divider"></div>
@@ -226,6 +277,7 @@
 
   <a class="panel panel--bistro" href="bistro.html">
     <span class="panel__label">Bistro</span>
+    <span class="panel__cta" aria-hidden="true">Enter &rarr;</span>
   </a>
 
   <ul class="social">
@@ -243,26 +295,6 @@
 
     bistro.addEventListener('mouseenter', () => document.body.classList.add('hover-bistro'));
     bistro.addEventListener('mouseleave', () => document.body.classList.remove('hover-bistro'));
-
-    if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
-      var tapped = null;
-      stage.addEventListener('click', function(e) {
-        if (tapped !== stage) {
-          e.preventDefault();
-          tapped = stage;
-          document.body.classList.add('hover-stage');
-          document.body.classList.remove('hover-bistro');
-        }
-      });
-      bistro.addEventListener('click', function(e) {
-        if (tapped !== bistro) {
-          e.preventDefault();
-          tapped = bistro;
-          document.body.classList.add('hover-bistro');
-          document.body.classList.remove('hover-stage');
-        }
-      });
-    }
   </script>
 
 </body>
