@@ -123,7 +123,12 @@ nav {
   font-size: clamp(2.8rem, 7vw, 5.5rem);
   line-height: 1.1;
   margin-bottom: 1.4rem;
+  max-width: 100%;
 }
+/* The sign-off star, borrowed from .vision-signoff, is sized in em — at the
+   hero's much larger type it needs pulling back so it stays a flourish, not a
+   focal point. Roughly matches the star's size in the old vision band. */
+.hero-title .signoff-star { height: 0.6em; }
 .hero-sub {
   font-size: clamp(0.7rem, 1.5vw, 0.82rem);
   letter-spacing: 0.1em;
@@ -131,6 +136,11 @@ nav {
   max-width: 480px;
   line-height: 2;
   margin-bottom: 3rem;
+}
+/* The tagline headline runs long — ease the type down on narrow screens so it
+   keeps to two lines and never overflows .hero (which clips). */
+@media (max-width: 768px) {
+  .hero-title { font-size: clamp(1.75rem, 7vw, 2.6rem); }
 }
 
 /* ── BUTTONS ── */

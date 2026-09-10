@@ -716,6 +716,7 @@ After deploying, submit `https://stageandstem.com/sitemap.xml` to Google Search 
 - `ErrorDocument 404 /404.html`
 - 301 redirect: `www.stageandstem.com` → `stageandstem.com`
 - Force-HTTPS rule is **commented out** — uncomment the two `RewriteCond %{HTTPS} off` / `RewriteRule` lines once SSL is provisioned on the domain.
+- **Cache-Control block** (`<IfModule mod_headers.c>`): HTML/CSS/JS set to `no-cache, must-revalidate` so a re-upload shows on the next page load; images/fonts/PDFs cached a week. See **Hosting & Deployment → Caching & cache-busting**.
 
 ### Favicon assets
 Three favicon files (`favicon.ico`, `favicon-32.png`, `apple-touch-icon.png`) are derived from `favicon-source.png` (1024×1024 PNG — comedy mask + wine glass on black). To regenerate them after editing the source, run any favicon tool (e.g. realfavicongenerator.net), or use Pillow:
@@ -754,6 +755,7 @@ Because the site is flat (all files in the root), every link and asset reference
 - [x] JSON-LD structured data (`Organization` sitewide; `Restaurant` on bistro pages; `PerformingArtsTheater` on stage pages; `FAQPage` on both contact pages)
 - [x] Favicon set (ICO + 32px PNG + 180px apple-touch) generated from `favicon-source.png`
 - [x] `robots.txt`, `sitemap.xml`, and `.htaccess` redirects (404, www → non-www, HTTPS-ready)
+- [x] Cache-Control headers in `.htaccess` + `?v=` cache-busting on all CSS/JS links (`tools/bump-cache.sh`) — deploys no longer need a hard-refresh to show
 - [x] Contact page desktop layout — two-column grid (contact info + Google Maps embed) with FAQ grid below; responsive single-column on mobile
 
 ## What Still Needs Building / Improving
@@ -782,6 +784,24 @@ Because the site is flat (all files in the root), every link and asset reference
 **Domain:** stageandstem.com
 
 The site is flat, so upload all files into `public_html` together (no subfolders to recreate). `index.html` serves as the landing page at the domain root.
+
+### Caching & cache-busting
+
+Without cache headers, browsers hold onto the old `style-*.css` / HTML after an upload and visitors see a half-updated page until they hard-refresh. Two things guard against that:
+
+1. **`.htaccess` Cache-Control block.** HTML, CSS and JS are sent `no-cache, must-revalidate` — the browser still caches them but checks with the server before each use, so a re-upload is picked up on the visitor's **next page load** (the check is a tiny `304` when nothing changed). Images, fonts and PDFs are cached for a week. Guarded by `<IfModule mod_headers.c>`, so it's harmless if the module is ever unavailable.
+2. **`?v=` tags on asset links.** Every `style-*.css` / `.js` link carries `?v=YYYYMMDD` (e.g. `style-bistro.css?v=20260909`). This is what clears a browser that cached a file *before* the headers existed — a new URL forces a fresh download.
+
+**Normal deploy:** just upload the changed files. Rule 1 handles it — you do **not** need to bump `?v=` for every change.
+
+**Force every visitor to refetch now** (after a big redesign, or if someone still reports a stale page):
+
+```sh
+sh tools/bump-cache.sh            # ?v= = today's date
+sh tools/bump-cache.sh 20260915   # …or an explicit YYYYMMDD
+```
+
+Then re-upload all the `.html` files. `tools/bump-cache.sh` is a dev tool (macOS `sh`, like `tools/optimize-photos.sh`) — not uploaded. It re-stamps the token on every page and is safe to run repeatedly.
 
 ---
 
