@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gallery.js preview — Stage &amp; Stem</title>
+  <link rel="stylesheet" href="../style-stage.css" />
+  <style>
+    /* Preview-only chrome. */
+    body { padding: 2rem; }
+    .note {
+      max-width: 40rem;
+      margin: 0 auto 2rem;
+      font-size: 0.8rem;
+      line-height: 1.8;
+      color: var(--muted);
+      border: 1px solid var(--accent-dim);
+      padding: 1.2rem 1.5rem;
+    }
+    .note code { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <p class="note">
+    Eyeball harness for <code>gallery.js</code> — the click-to-enlarge lightbox used on
+    <code>about.html</code>. Open it through a local static server run from the project root
+    (so <code>../Photos/</code> resolves), e.g. <code>python3 -m http.server</code> then
+    <code>/test/gallery-preview.html</code>. Click a thumbnail; page with the arrows, the
+    <kbd>&larr;</kbd>/<kbd>&rarr;</kbd> keys, or a swipe; close with <kbd>Esc</kbd>, the
+    &times;, or a click on the backdrop. Not uploaded to Fasthosts.
+  </p>
+
+  <div class="section" id="gallery" style="padding-top:0;">
+    <p class="section-eyebrow">Gallery</p>
+    <h2 class="section-title">Inside Stage &amp; Stem</h2>
+    <div class="rule"><div class="rule-gem"></div></div>
+
+    <div class="gallery" data-lightbox>
+      <figure class="figure"><a href="../Photos/web/exterior.jpg"><img src="../Photos/thumb/exterior.jpg" alt="Stage &amp; Stem on Richmond Road" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="../Photos/web/dance.jpg"><img src="../Photos/thumb/dance.jpg" alt="Dancers on the Stage &amp; Stem stage" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="../Photos/web/chandelier.jpg"><img src="../Photos/thumb/chandelier.jpg" alt="The chandelier above the performance space" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="../Photos/web/bistro.jpg"><img src="../Photos/thumb/bistro.jpg" alt="The bistro dining room at Stage &amp; Stem" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="../Photos/web/bar.jpg"><img src="../Photos/thumb/bar.jpg" alt="The bar at Stage &amp; Stem" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="../Photos/web/piano.jpg"><img src="../Photos/thumb/piano.jpg" alt="A pianist performing at Stage &amp; Stem" loading="lazy" decoding="async" /></a></figure>
+    </div>
+  </div>
+
+  <script src="../gallery.js"></script>
+</body>
+</html>

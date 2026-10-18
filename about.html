@@ -27,7 +27,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <meta name="theme-color" content="#08080f" />
 
-  <link rel="stylesheet" href="style-stage.css" />
+  <link rel="stylesheet" href="style-stage.css?v=20260910" />
 
   <script type="application/ld+json">
   {
@@ -89,7 +89,11 @@
     </ul>
   </nav>
 
-  <div class="section vision-section" style="padding-top:5rem;">
+  <div class="page-mast">
+    <img src="logo_large.png" alt="" width="1024" height="1024" decoding="async" />
+  </div>
+
+  <div class="section vision-section" style="padding-top:2.5rem;">
     <p class="section-eyebrow">About Stage &amp; Stem</p>
     <h1 class="section-title">Our Vision</h1>
     <div class="rule"><div class="rule-gem"></div></div>
@@ -118,6 +122,40 @@
     </p>
   </div>
 
+  <div class="section" id="gallery" style="padding-top:0;">
+    <p class="section-eyebrow">Gallery</p>
+    <h2 class="section-title">Inside Stage &amp; Stem</h2>
+    <div class="rule"><div class="rule-gem"></div></div>
+
+    <!-- Click a photo to open it large and page through the set (gallery.js).
+         To add a photo: drop the original in Photos/, run tools/optimize-photos.sh,
+         then copy one line below and change the two file names + the alt text. -->
+    <div class="gallery" data-lightbox>
+      <figure class="figure"><a href="Photos/web/exterior.jpg"><img src="Photos/thumb/exterior.jpg" alt="Stage &amp; Stem on Richmond Road" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/stage-doors.jpg"><img src="Photos/thumb/stage-doors.jpg" alt="The Sliding Doors at Stage &amp; Stem" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/dance.jpg"><img src="Photos/thumb/dance.jpg" alt="Dancer on the Stage &amp; Stem stage" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/chandelier.jpg"><img src="Photos/thumb/chandelier.jpg" alt="The chandelier above the Bistro" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/singing.jpg"><img src="Photos/thumb/singing.jpg" alt="Singers on the Stage &amp; Stem stage" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/bistro.jpg"><img src="Photos/thumb/bistro.jpg" alt="The bistro dining room at Stage &amp; Stem" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/food.jpg"><img src="Photos/thumb/food.jpg" alt="A plate of seasonal food at the bistro" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/bar.jpg"><img src="Photos/thumb/bar.jpg" alt="The bar at Stage &amp; Stem" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/piano.jpg"><img src="Photos/thumb/piano.jpg" alt="A pianist performing at Stage &amp; Stem" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/olives.jpg"><img src="Photos/thumb/olives.jpg" alt="Small plates at the Stage &amp; Stem bistro" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/mirror.jpg"><img src="Photos/thumb/mirror.jpg" alt="Modern Decor" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/drinks.jpg"><img src="Photos/thumb/drinks.jpg" alt="Drinks at the bar" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/bistro-3.jpg"><img src="Photos/thumb/bistro-3.jpg" alt="Dining at the Stage &amp; Stem bistro" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/trumpet.jpg"><img src="Photos/thumb/trumpet.jpg" alt="A trumpeter performing at Stage &amp; Stem" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/chair.jpg"><img src="Photos/thumb/chair.jpg" alt="Seating in the Bistro" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/drinks-2.jpg"><img src="Photos/thumb/drinks-2.jpg" alt="Cocktails at Stage &amp; Stem" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/bistro-2.jpg"><img src="Photos/thumb/bistro-2.jpg" alt="A table in the Stage &amp; Stem bistro" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/backstage.jpg"><img src="Photos/thumb/backstage.jpg" alt="Backstage at Stage &amp; Stem" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/bar-2.jpg"><img src="Photos/thumb/bar-2.jpg" alt="The bar at Stage &amp; Stem" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/bistro-4.jpg"><img src="Photos/thumb/bistro-4.jpg" alt="The Stage &amp; Stem bistro" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/outside.jpg"><img src="Photos/thumb/outside.jpg" alt="The outside garden space at Stage &amp; Stem" loading="lazy" decoding="async" /></a></figure>
+      <figure class="figure"><a href="Photos/web/bistro-5.jpg"><img src="Photos/thumb/bistro-5.jpg" alt="An evening in the Stage &amp; Stem bistro" loading="lazy" decoding="async" /></a></figure>
+    </div>
+  </div>
+
   <div class="newsletter-strip">
     <p class="newsletter-eyebrow">Stay in the loop</p>
     <h2 class="newsletter-title">Updates, direct to your inbox</h2>
@@ -140,6 +178,7 @@
       <li><a href="perform-with-us.html">Perform With Us</a></li>
       <li><a href="venue-hire.html">Venue Hire</a></li>
       <li><a href="contact_stage.html">Contact</a></li>
+      <li><a href="about.html#gallery">Gallery</a></li>
       <li><a href="bistro.html">Bistro →</a></li>
     </ul>
     <ul class="social-links">
@@ -151,6 +190,7 @@
 
   <p class="site-credit">Designed by <a href="https://christagg.co.uk" target="_blank" rel="noopener">Chris Tagg Web Design</a></p>
 
-  <script src="newsletter.js"></script>
+  <script src="newsletter.js?v=20260910"></script>
+  <script src="gallery.js?v=20260910"></script>
 </body>
 </html>

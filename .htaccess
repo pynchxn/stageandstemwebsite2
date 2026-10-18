@@ -9,3 +9,17 @@ RewriteRule ^(.*)$ https://stageandstem.com/$1 [R=301,L]
 # Force HTTPS — uncomment the two lines below once SSL is provisioned on the domain.
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# ── Caching ──────────────────────────────────────────────────────────────
+# HTML / CSS / JS: always revalidate with the server, so a re-upload shows on
+# the visitor's next page load — no hard-refresh needed. (Apache's default
+# Last-Modified/ETag makes this a tiny 304 when nothing changed.)
+# Images / fonts / PDFs: cached a week — they change under a new filename anyway.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|css|js)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "\.(png|jpe?g|gif|webp|svg|ico|woff2?|ttf|eot|pdf)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+</IfModule>
