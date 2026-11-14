@@ -59,7 +59,7 @@ test('formatPrice prepends £ only to a bare number', () => {
 test('normaliseRow: Date and Name are the only required cells', () => {
   assert.equal(E.normaliseRow(['2026-07-01', '', '', '', '']), null, 'no name → skip');
   assert.equal(E.normaliseRow(['', '', '', '', 'Nameless']), null, 'no date → skip');
-  assert.equal(E.normaliseRow(['not-a-date', '', '', '', 'Bad Date']), null, 'unparseable date → skip');
+  assert.equal(E.normaliseRow(['31/13/2026', '', '', '', 'Bad Date']), null, 'mistyped date → skip');
 
   const row = E.normaliseRow(['2026-04-26', '', 'Theatre', '', 'One Act Festival']);
   assert.ok(row, 'date + name only → renders');
@@ -226,4 +226,25 @@ test('missing Ticket URL leaves nothing to click', () => {
 test('zero upcoming events is a normal outcome, not an error', () => {
   const now = { date: '2030-01-01', time: '00:00' };
   assert.deepEqual(pipeline(FIXTURE.values, now), []);
+});
+
+test('ongoing events: words in the Date cell list the event with no expiry', () => {
+  for (const label of ['Ongoing', 'Every Friday', 'Until 20 Dec']) {
+    const row = E.normaliseRow([label, '', 'Art', '', 'Exhibition']);
+    assert.ok(row, label + ' → renders');
+    assert.equal(row.date, null);
+    assert.equal(row.ongoing, label);
+    assert.equal(E.isUpcoming(row, { date: '2030-01-01', time: '00:00' }), true, label + ' never expires');
+  }
+  assert.equal(E.normaliseRow(['31/13/2026', '', '', '', 'Typo']), null, 'date-shaped typo is not ongoing');
+});
+
+test('ongoing events sort above dated events', () => {
+  const rows = [
+    ['2026-05-02', '', '', '', 'Gig B'],
+    ['Ongoing', '', '', '', 'Exhibition'],
+    ['2026-05-01', '', '', '', 'Gig A']
+  ];
+  const names = rows.map(E.normaliseRow).sort(E.byDateThenName).map((e) => e.name);
+  assert.deepEqual(names, ['Exhibition', 'Gig A', 'Gig B']);
 });

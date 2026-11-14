@@ -222,7 +222,7 @@ test('a multi-category event shows under each of its category filters', async ()
 
 test('bad-date and nameless rows are dropped without breaking the render', async () => {
   const { list } = setup([
-    ['not-a-date', '', 'Music', '', 'Bad Date'],
+    ['31/13/2026', '', 'Music', '', 'Bad Date'],
     [iso(30), '', 'Music', 'tag', '', 'detail but no name'],
     [iso(5), '', 'Music', '', 'Good One', '', '£10', '', '', 'book_stage.html']
   ]);

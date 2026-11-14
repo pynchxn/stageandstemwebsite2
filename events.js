@@ -11,9 +11,13 @@
  *  - Rebuilds the category filter tabs from the categories actually present.
  *  - Only the Date and Name cells are required. Every other cell may be blank and
  *    the row still renders.
+ *  - ONGOING EVENTS: type words instead of a date in the Date cell (e.g. "Ongoing",
+ *    "Every Friday", "Weekends"). The row is listed at the top, shows those words
+ *    in place of the date, and never expires — delete the row when it finishes.
  *
  *  Sheet columns, in order (row 1 is the header, data starts on row 2):
- *    A Date        2026-04-12         required — YYYY-MM-DD (also accepts DD/MM/YYYY)
+ *    A Date        2026-04-12         required — YYYY-MM-DD (also accepts DD/MM/YYYY),
+ *                                     or words such as "Ongoing" for an ongoing event
  *    B Start time  20:00              optional — shown on the row; blank = no time shown
  *    C Category    Music, Comedy      optional — drives the filter tabs; comma-separated for several
  *    D Tag         Jazz · Live Music  optional — small label above the name
@@ -48,7 +52,10 @@
     range: 'Events!A2:J',
 
     // Events appear/disappear on London time, never the visitor's clock.
-    timeZone: 'Europe/London'
+    timeZone: 'Europe/London',
+
+    // Symbol shown in the big date slot for ongoing events (words go underneath).
+    ongoingSymbol: '∞'
   };
 
   /* ─────────────────────────────────────────────────────────────────────────── */
@@ -83,7 +90,9 @@
     return { y: y, mo: mo, d: d, iso: y + '-' + pad(mo) + '-' + pad(d) };
   }
 
-  // Accepts "YYYY-MM-DD", "DD/MM/YYYY" (UK order), or anything Date.parse understands.
+  // Accepts "YYYY-MM-DD", "DD/MM/YYYY" (UK order), or anything Date.parse understands
+  // that includes a 4-digit year (e.g. "20 Nov 2026"). Without the year rule, text
+  // like "Until 20 Dec" is read by some browsers as 20 Dec 2001 and silently hidden.
   function parseEventDate(raw) {
     if (raw == null || raw === '') return null;
     var s = String(raw).trim();
@@ -91,9 +100,16 @@
     if (m) return ymd(+m[1], +m[2], +m[3]);
     m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(s);
     if (m) return ymd(+m[3], +m[2], +m[1]);
+    if (!/\b\d{4}\b/.test(s)) return null;
     var t = Date.parse(s);
     if (!isNaN(t)) { var d = new Date(t); return ymd(d.getFullYear(), d.getMonth() + 1, d.getDate()); }
     return null;
+  }
+
+  // A Date cell that was clearly meant to be a date but isn't valid (e.g. "31/13/2026").
+  // These are still skipped, so a typo never turns into a permanent "ongoing" listing.
+  function looksLikeDate(raw) {
+    return /^\s*\d{1,4}\s*[\/\-.]\s*\d{1,2}\s*[\/\-.]\s*\d{1,4}\s*$/.test(String(raw));
   }
 
   // "20:00", "8:00pm", "8pm" → "20:00"; junk → null.
@@ -157,9 +173,12 @@
 
   // Keep an event listed until the end of its day in London — never based on the
   // visitor's clock. The Start time is display-only and does not hide the row.
+  // Ongoing events (no date) are always listed.
   function isUpcoming(evt, now) {
+    if (!evt) return false;
+    if (evt.ongoing) return true;
     now = now || londonNow();
-    if (!evt || !evt.date) return false;
+    if (!evt.date) return false;
     return now.date <= evt.date.iso;
   }
 
@@ -172,10 +191,15 @@
 
     if (!raw.date || !raw.name) return null;          // Date + Name are the only required cells
     var date = parseEventDate(raw.date);
-    if (!date) return null;                           // unparseable date → skip, don't break the page
+    var ongoing = null;
+    if (!date) {
+      if (looksLikeDate(raw.date)) return null;       // mistyped date → skip, don't break the page
+      ongoing = raw.date;                             // words like "Ongoing" / "Every Friday"
+    }
 
     return {
       date: date,
+      ongoing: ongoing,
       startTime: parseTime(raw.start),
       categories: parseCategories(raw.category),
       tag: raw.tag,
@@ -201,8 +225,10 @@
     return out;
   }
 
+  // Ongoing events first (A–Z), then dated events by date, then name.
   function byDateThenName(a, b) {
-    if (a.date.iso !== b.date.iso) return a.date.iso < b.date.iso ? -1 : 1;
+    if (!a.date !== !b.date) return a.date ? 1 : -1;
+    if (a.date && b.date && a.date.iso !== b.date.iso) return a.date.iso < b.date.iso ? -1 : 1;
     return a.name.localeCompare(b.name);
   }
 
@@ -260,11 +286,17 @@
 
     var clickable = !evt.status && !!evt.ticketUrl;
     if (evt.status) row.classList.add(evt.status.key);
+    if (evt.ongoing) row.classList.add('event-row--ongoing');
     if (!clickable) row.classList.add('event-row--static');
 
     var date = el('div', 'event-row-date');
-    date.appendChild(el('div', 'event-row-day', pad(evt.date.d)));
-    date.appendChild(el('div', 'event-row-month', MONTHS[evt.date.mo - 1] + ' ' + evt.date.y));
+    if (evt.date) {
+      date.appendChild(el('div', 'event-row-day', pad(evt.date.d)));
+      date.appendChild(el('div', 'event-row-month', MONTHS[evt.date.mo - 1] + ' ' + evt.date.y));
+    } else {
+      date.appendChild(el('div', 'event-row-day', CONFIG.ongoingSymbol));
+      date.appendChild(el('div', 'event-row-month', evt.ongoing));
+    }
     var startLabel = formatTime(evt.startTime);
     if (startLabel) date.appendChild(el('div', 'event-row-time', startLabel));
     row.appendChild(date);
@@ -379,6 +411,7 @@
       formatPrice: formatPrice, parseCategories: parseCategories,
       londonNow: londonNow, isUpcoming: isUpcoming, normaliseRow: normaliseRow,
       categoriesOf: categoriesOf, byDateThenName: byDateThenName,
+      looksLikeDate: looksLikeDate,
       render: render, eventRow: eventRow, MSG: MSG
     };
   }
