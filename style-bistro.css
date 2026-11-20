@@ -781,14 +781,16 @@ footer {
 
 /* ── MENU PICKER (menus.html) ──
    Each photo is paired with its menu card in one .menu-pick wrapper, so the two
-   stay together when the 3-up grid collapses to a single column on mobile
-   (previously the photos and the cards were separate grids and drifted apart). */
+   stay together when the 2-up grid collapses to a single column on mobile
+   (previously the photos and the cards were separate grids and drifted apart).
+   Two menus (Events + Drinks) since lunch service ended — max-width keeps each
+   card the same size it was in the old 3-up row, centred on the page. */
 .menu-picks {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   margin: 3rem auto;
-  max-width: 1100px;
+  max-width: 730px;
 }
 .menu-pick { display: flex; flex-direction: column; }
 .menu-pick .figure { margin: 0; max-width: none; }
